@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Romanico — Appunti di Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f4;
+            --text: #2c2418;
+            --text-light: #6b5d4d;
+            --accent: #8b4513;
+            --accent-light: #c4956a;
+            --border: #d4c5b0;
+            --highlight: #f5ead6;
+            --section-bg: #f0ebe3;
+            --timeline-line: #8b4513;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 17px; scroll-behavior: smooth; }
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .page { max-width: 780px; margin: 0 auto; padding: 3rem 4rem; }
+        @media (max-width: 900px) { .page { padding: 2rem 1.5rem; } }
+
+        /* HEADER */
+        header { text-align: center; padding: 3rem 0 2rem; border-bottom: 2px solid var(--accent); margin-bottom: 3rem; }
+        header .unit-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+        header .subtitle { font-style: italic; color: var(--text-light); font-size: 1.05rem; }
+        header .period { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-top: 0.8rem; }
+
+        /* SECTIONS */
+        section { margin-bottom: 3rem; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-top: 1.8rem; margin-bottom: 0.6rem; }
+        h4 { font-family: 'Source Serif 4', serif; font-size: 1rem; font-weight: 600; color: var(--accent); margin-top: 1.2rem; margin-bottom: 0.4rem; }
+        p { margin-bottom: 0.8rem; }
+        strong { color: var(--text); }
+        ul { margin: 0.5rem 0 1rem 1.2rem; list-style: none; }
+        ul li { position: relative; padding-left: 1rem; margin-bottom: 0.4rem; }
+        ul li::before { content: '–'; position: absolute; left: 0; color: var(--accent); font-weight: 600; }
+
+        /* TIMELINE */
+        .timeline { position: relative; padding: 1.5rem 0; margin: 1.5rem 0; }
+        .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--timeline-line); }
+        .timeline-item { position: relative; padding-left: 2.5rem; margin-bottom: 1.2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: 3px; top: 0.5rem; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+        .timeline-text { font-size: 0.92rem; color: var(--text); }
+
+        /* FIGURES & IMAGES */
+        .fig {
+            margin: 1.2rem 0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--section-bg);
+            border: 1px solid var(--border);
+        }
+        .fig img, .fig svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .fig figcaption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-light);
+            letter-spacing: 0.03em;
+            padding: 0.6rem 0.8rem;
+            line-height: 1.5;
+            border-top: 1px solid var(--border);
+            background: var(--section-bg);
+        }
+        .fig-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+        .fig-row .fig { margin: 0; }
+        @media (max-width: 600px) { .fig-row { grid-template-columns: 1fr; } }
+
+        .fig.tall img { max-height: 500px; object-fit: contain; background: var(--bg); }
+        .fig.wide img { max-height: 350px; object-fit: contain; background: var(--bg); }
+        .fig.diagram { padding: 1rem; background: var(--bg); }
+        .fig.diagram svg { max-height: 380px; }
+        .fig.diagram figcaption { background: var(--bg); }
+
+        /* OPERA BLOCK */
+        .opera-block { background: var(--section-bg); border-left: 4px solid var(--accent); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; }
+        .opera-block h3 { margin-top: 0; font-size: 1.15rem; }
+        .opera-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.8rem; letter-spacing: 0.03em; }
+        .opera-block .fig { background: var(--bg); }
+        .opera-block .fig figcaption { background: var(--bg); }
+
+        /* GLOSSARY */
+        .glossary { columns: 2; column-gap: 2rem; margin-top: 1rem; }
+        @media (max-width: 600px) { .glossary { columns: 1; } }
+        .glossary-item { break-inside: avoid; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        .glossary-term { font-weight: 600; color: var(--accent); font-size: 0.95rem; }
+        .glossary-def { font-size: 0.88rem; color: var(--text-light); margin-top: 0.15rem; }
+
+        /* KEY POINT */
+        .key-point { background: var(--highlight); border-radius: 6px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.95rem; }
+        .key-point::before { content: '💡'; margin-right: 0.3rem; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+
+        /* PRINT */
+        @media print {
+            html { font-size: 11pt; }
+            .page { padding: 0; max-width: 100%; }
+            .fig { break-inside: avoid; }
+            section { page-break-inside: avoid; }
+            .opera-block { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header>
+        <div class="unit-label">Unità 6 · Storia dell'Arte</div>
+        <h1>Il Romanico</h1>
+        <div class="subtitle">Appunti di studio — l'essenziale</div>
+        <div class="period">XI – XIII secolo</div>
+    </header>
+
+    <section>
+        <h2>1. Cronologia</h2>
+        <div class="timeline">
+            <div class="timeline-item"><div class="timeline-date">476</div><div class="timeline-text">Caduta dell'Impero romano d'Occidente → inizio del <strong>Medioevo</strong></div></div>
+            <div class="timeline-item"><div class="timeline-date">VI sec.</div><div class="timeline-text"><strong>Benedetto da Norcia</strong> fonda le prime comunità monastiche (ora et labora)</div></div>
+            <div class="timeline-item"><div class="timeline-date">IX sec.</div><div class="timeline-text">Gli <strong>Arabi</strong> conquistano la Sicilia ai Bizantini</div></div>
+            <div class="timeline-item"><div class="timeline-date">X–XI sec.</div><div class="timeline-text">Fondazione abbazie <strong>cluniacensi</strong> e <strong>cistercensi</strong>; Cluny diventa grande come una città</div></div>
+            <div class="timeline-item"><div class="timeline-date">dopo il 1000</div><div class="timeline-text">Crescita demografica ed economica → <strong>rinascita delle città</strong></div></div>
+            <div class="timeline-item"><div class="timeline-date">1027</div><div class="timeline-text">Castello di Cly, Aosta — esempio di architettura difensiva</div></div>
+            <div class="timeline-item"><div class="timeline-date">1063</div><div class="timeline-text">Inizio costruzione <strong>Basilica di San Marco</strong>, Venezia (consacrata 1094)</div></div>
+            <div class="timeline-item"><div class="timeline-date">1087–1197</div><div class="timeline-text"><strong>Cattedrale di San Nicola</strong>, Bari (Romanico pugliese)</div></div>
+            <div class="timeline-item"><div class="timeline-date">1099</div><div class="timeline-text">Inizio lavori <strong>Duomo di Modena</strong> (Lanfranco + Wiligelmo)</div></div>
+            <div class="timeline-item"><div class="timeline-date">1099–1106</div><div class="timeline-text"><strong>Wiligelmo</strong> scolpisce le lastre della Genesi (facciata, Modena)</div></div>
+            <div class="timeline-item"><div class="timeline-date">XI–XII sec.</div><div class="timeline-text"><strong>Basilica di Sant'Ambrogio</strong>, Milano — rifacimento romanico</div></div>
+            <div class="timeline-item"><div class="timeline-date">XI–XIII sec.</div><div class="timeline-text"><strong>Battistero di San Giovanni</strong>, Firenze (Romanico fiorentino)</div></div>
+            <div class="timeline-item"><div class="timeline-date">1118</div><div class="timeline-text"><strong>Piazza del Duomo a Pisa</strong>: inizia il Battistero; complesso completo entro il Trecento</div></div>
+            <div class="timeline-item"><div class="timeline-date">1155</div><div class="timeline-text"><strong>Basilica di San Michele</strong>, Pavia — completamento facciata</div></div>
+            <div class="timeline-item"><div class="timeline-date">1162</div><div class="timeline-text">Facciata del <strong>Duomo di Pisa</strong> (Buscheto e Rainaldo)</div></div>
+            <div class="timeline-item"><div class="timeline-date">1178</div><div class="timeline-text"><strong>Deposizione di Cristo</strong> di Benedetto Antelami, Duomo di Parma</div></div>
+            <div class="timeline-item"><div class="timeline-date">1210–15</div><div class="timeline-text">Antelami, <em>Mese di settembre</em> — ciclo dei mesi, Battistero di Parma</div></div>
+            <div class="timeline-item"><div class="timeline-date">1492</div><div class="timeline-text">Scoperta dell'America → fine convenzionale del Medioevo</div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>2. Contesto storico e sociale</h2>
+        <p>Il Medioevo (476–1492) si divide in due fasi. La seconda, dall'anno Mille, è segnata da <strong>crescita economica, demografica e urbana</strong>. Le città rifioriscono, nascono le attività artigianali e una nuova classe sociale legata al commercio.</p>
+        <p>Il potere è in mano a <strong>papa</strong> e <strong>imperatore</strong>; la società si regge sul <strong>vassallaggio</strong>. I <strong>monaci</strong> (benedettini, cluniacensi, cistercensi) sono custodi della cultura: copiano i manoscritti negli <em>scriptoria</em>, decorandoli con <strong>miniature</strong>.</p>
+        <div class="key-point">La Chiesa è il committente principale di tutta l'arte romanica. Ogni opera — dalla scultura al mosaico — ha funzione religiosa e didattica: raccontare la Bibbia a un popolo per lo più analfabeta.</div>
+        <p>L'Italia non è un paese unito: la <strong>frammentazione politica</strong> e le diverse influenze culturali (romano-barbariche, bizantine, arabe, normanne) producono <strong>varianti regionali</strong> molto diverse tra loro.</p>
+        <figure class="fig">
+            <img src="img/cermony.jpg" alt="Miniatura raffigurante la cerimonia dell'omaggio feudale, XII secolo">
+            <figcaption>Cerimonia dell'omaggio — il vassallo giura fedeltà al signore mettendo le mani nelle sue. Miniatura, XII sec.</figcaption>
+        </figure>
+    </section>
+
+    <section>
+        <h2>3. La chiesa romanica — caratteri generali</h2>
+        <p>Edifici dall'aspetto <strong>severo e monumentale</strong>, muri massicci, piccole finestre. Si ispirano all'architettura paleocristiana ma introducono importanti innovazioni.</p>
+        <h3>Pianta e struttura</h3>
+        <ul>
+            <li><strong>Pianta longitudinale</strong> a <strong>croce latina</strong> (transetto con bracci disuguali)</li>
+            <li>Interno diviso in <strong>tre o più navate</strong>; la centrale è la più ampia</li>
+            <li><strong>Presbiterio</strong> sopraelevato, con sotto la <strong>cripta</strong> (reliquie e sepolture)</li>
+            <li><strong>Matroneo</strong> sopra le navate laterali (galleria per le donne)</li>
+            <li><strong>Coro</strong> nell'abside per cantori e ecclesiastici</li>
+        </ul>
+        <figure class="fig tall">
+            <img src="img/disegno-ricostruttivo.jpg" alt="Spaccato assonometrico di una chiesa romanica tipo">
+            <figcaption>Spaccato assonometrico di una chiesa romanica — visibili: navata centrale, navate laterali, transetto, abside, cripta, matroneo, protiro con leoni stilofori, campate e bifore.</figcaption>
+        </figure>
+        <h3>Coperture</h3>
+        <ul>
+            <li><strong>Volta a crociera</strong>: due archi che si incrociano → 4 <strong>vele</strong>, rinforzate da <strong>costoloni</strong></li>
+            <li>Il peso scarica su 4 <strong>pilastri</strong> agli angoli</li>
+            <li>Lo spazio tra i pilastri = una <strong>campata</strong></li>
+        </ul>
+        <figure class="fig diagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420" font-family="Georgia, serif">
+                <defs><style>.sv-label{font-size:14px;fill:#2c2418;font-weight:bold}.sv-label-small{font-size:12px;fill:#6b5d4d}.sv-rib{stroke:#8b4513;stroke-width:3.5;fill:none;stroke-linecap:round}.sv-arch{stroke:#a0896e;stroke-width:2;fill:none;stroke-linecap:round}.sv-vela{fill-opacity:.18}.sv-pillar{fill:#b8a48c;stroke:#8b7a64;stroke-width:1.5}.sv-leader{stroke:#6b5d4d;stroke-width:1;fill:none;stroke-dasharray:3,3}.sv-dot{fill:#8b4513}</style></defs>
+                <text x="250" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#2c2418">Volta a crociera</text>
+                <path d="M 100,320 Q 175,220 250,200 Q 175,220 100,320" class="sv-vela" fill="#c4956a"/><path d="M 250,200 Q 325,220 400,320 Q 325,220 250,200" class="sv-vela" fill="#c4956a"/>
+                <path d="M 100,320 Q 130,230 150,180 Q 200,170 250,200 Q 175,220 100,320" class="sv-vela" fill="#d4a574"/><path d="M 400,320 Q 370,230 350,180 Q 300,170 250,200 Q 325,220 400,320" class="sv-vela" fill="#d4a574"/>
+                <path d="M 150,180 Q 200,120 250,100 Q 200,140 150,180" class="sv-vela" fill="#b89068"/><path d="M 350,180 Q 300,120 250,100 Q 300,140 350,180" class="sv-vela" fill="#b89068"/>
+                <path d="M 150,180 Q 250,80 350,180" class="sv-arch" stroke-dasharray="6,4"/><path d="M 100,320 Q 120,210 150,180" class="sv-arch"/><path d="M 400,320 Q 380,210 350,180" class="sv-arch"/><path d="M 100,320 Q 250,190 400,320" class="sv-arch"/>
+                <path d="M 100,320 Q 180,220 250,200 Q 210,150 150,180" class="sv-rib"/><path d="M 400,320 Q 320,220 250,200 Q 290,150 350,180" class="sv-rib"/>
+                <path d="M 100,320 Q 200,190 250,100" class="sv-rib" stroke-dasharray="6,4" stroke-opacity="0.5"/><path d="M 400,320 Q 300,190 250,100" class="sv-rib" stroke-dasharray="6,4" stroke-opacity="0.5"/>
+                <circle cx="250" cy="200" r="6" class="sv-dot"/><circle cx="250" cy="200" r="3" fill="#faf8f4"/><circle cx="250" cy="100" r="4" class="sv-dot" opacity="0.4"/>
+                <rect x="85" y="310" width="30" height="50" class="sv-pillar" rx="2"/><rect x="385" y="310" width="30" height="50" class="sv-pillar" rx="2"/><rect x="137" y="170" width="26" height="40" class="sv-pillar" rx="2" opacity="0.6"/><rect x="337" y="170" width="26" height="40" class="sv-pillar" rx="2" opacity="0.6"/>
+                <line x1="175" y1="255" x2="52" y2="160" class="sv-leader"/><circle cx="175" cy="255" r="2.5" class="sv-dot"/><text x="50" y="155" class="sv-label" text-anchor="end">costolone</text><text x="50" y="170" class="sv-label-small" text-anchor="end">(nervatura di rinforzo)</text>
+                <line x1="340" y1="260" x2="440" y2="160" class="sv-leader"/><circle cx="340" cy="260" r="2.5" class="sv-dot"/><text x="442" y="155" class="sv-label">vela</text><text x="442" y="170" class="sv-label-small">(superficie ricurva)</text>
+                <line x1="415" y1="340" x2="462" y2="370" class="sv-leader"/><text x="464" y="375" class="sv-label">pilastro</text>
+                <line x1="250" y1="200" x2="250" y2="63" class="sv-leader"/><text x="250" y="55" text-anchor="middle" class="sv-label">chiave di volta</text>
+                <line x1="310" y1="270" x2="445" y2="290" class="sv-leader"/><text x="447" y="295" class="sv-label">arco</text>
+                <text x="250" y="400" text-anchor="middle" font-size="11" fill="#9a8b78" font-style="italic">I due archi diagonali (costoloni) si incrociano al centro</text><text x="250" y="415" text-anchor="middle" font-size="11" fill="#9a8b78" font-style="italic">dividendo la volta in quattro vele</text>
+            </svg>
+            <figcaption>Volta a crociera — i costoloni (nervature diagonali) dividono la copertura in quattro vele, scaricando il peso sui pilastri angolari.</figcaption>
+        </figure>
+        <h3>Facciate</h3>
+        <ul>
+            <li><strong>A capanna</strong>: profilo a triangolo (es. Duomo di Parma)</li>
+            <li><strong>A salienti</strong>: mostra le diverse altezze delle navate (es. San Miniato al Monte, Firenze)</li>
+            <li>Finestre: <strong>monofore</strong> (1 apertura), <strong>bifore</strong> (2), <strong>trifore</strong> (3)</li>
+            <li><strong>Protiro</strong>: portico sul portale, con colonnine su <strong>leoni stilofori</strong></li>
+        </ul>
+        <div class="fig-row">
+            <figure class="fig">
+                <img src="img/parma-duomo.webp" alt="Facciata a capanna del Duomo di Parma">
+                <figcaption>Duomo di Parma, XII sec. — facciata a capanna (profilo a triangolo).</figcaption>
+            </figure>
+            <figure class="fig">
+                <img src="img/San-Miniato.webp" alt="Facciata a salienti di San Miniato al Monte, Firenze">
+                <figcaption>San Miniato al Monte, Firenze, XII sec. — facciata a salienti (altezze diverse delle navate).</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h2>4. Varianti regionali in Italia</h2>
+        <div class="key-point">L'Italia frammentata produce stili romanici diversi per materiali, influenze culturali e tradizioni costruttive locali.</div>
+        <h3>Romanico lombardo</h3>
+        <p>Decorazione murale con <strong>rientranze e sporgenze</strong> per creare effetti di <strong>chiaroscuro</strong>. Tipici gli <strong>archetti</strong> decorativi (ciechi o su colonnine). Portali <strong>strombati</strong>. Esempio: <strong>Basilica di San Michele, Pavia</strong> (terminata 1155).</p>
+        <h3>Romanico fiorentino</h3>
+        <p>Forte <strong>continuità con l'architettura classica</strong> (archi a tutto sesto, capitelli, cornici). <strong>Decorazione geometrica</strong> con pietre di diversi colori (bianco e verde). Esempio: <strong>Battistero di San Giovanni, Firenze</strong> — pianta ottagonale.</p>
+        <h3>Romanico pugliese</h3>
+        <p>Mescola influenze <strong>bizantine, arabe e normanne</strong>. Aspetto possente e severo. Esempio: <strong>Cattedrale di San Nicola, Bari</strong> (1087–1197) — facciata a salienti tripartita, due massicce torri di impronta normanna, protiro con buoi stilofori.</p>
+        <div class="fig-row">
+            <figure class="fig">
+                <img src="img/pavia_chiesa_di_san_michele_maggiore.webp" alt="Facciata della Basilica di San Michele, Pavia">
+                <figcaption>San Michele, Pavia, terminata 1155 — archetti decorativi su colonnine e portali strombati, tipici del Romanico lombardo.</figcaption>
+            </figure>
+            <figure class="fig">
+                <img src="img/firenze.jpeg" alt="Battistero di San Giovanni, Firenze">
+                <figcaption>Battistero di San Giovanni, Firenze, XI–XIII sec. — pianta ottagonale, decorazione geometrica in pietra bianca e verde.</figcaption>
+            </figure>
+        </div>
+        <figure class="fig">
+            <img src="img/bari.jpg" alt="Cattedrale di San Nicola, Bari">
+            <figcaption>Cattedrale di San Nicola, Bari, 1087–1197 — facciata a salienti tripartita con due torri normanne e protiro con buoi stilofori.</figcaption>
+        </figure>
+    </section>
+
+    <section>
+        <h2>5. Le opere principali</h2>
+
+        <div class="opera-block">
+            <h3>Basilica di Sant'Ambrogio — Milano</h3>
+            <div class="opera-meta">XI–XII sec. · Milano</div>
+            <ul>
+                <li>Originariamente fatta costruire dal vescovo <strong>Ambrogio</strong> (IV sec.) per custodire le reliquie dei martiri Gervasio e Protasio</li>
+                <li>Rifatta in forme romaniche dall'XI sec.</li>
+                <li>Si accede attraverso un <strong>quadriportico</strong> con archi a tutto sesto</li>
+                <li>Facciata <strong>a capanna</strong> con <strong>due loggiati sovrapposti</strong></li>
+                <li>Interno: spazio <strong>longitudinale e proporzionato</strong>; volte a crociera (5m navate laterali, 10m navata centrale)</li>
+                <li>Pilastri <strong>compositi</strong> (più supporti verticali uniti)</li>
+                <li><strong>Cripta</strong> sotto il presbiterio sopraelevato; <strong>matroneo</strong> sopra le navate laterali</li>
+                <li>Significato: <strong>modello per molte chiese successive</strong>; prima grande applicazione delle volte a crociera</li>
+            </ul>
+            <div class="fig-row">
+                <figure class="fig">
+                    <img src="img/Sant'Ambrogio_quadriportico.jpg" alt="Basilica di Sant'Ambrogio, Milano — esterno con quadriportico">
+                    <figcaption>Sant'Ambrogio, Milano — facciata a capanna preceduta dal quadriportico con archi a tutto sesto.</figcaption>
+                </figure>
+                <figure class="fig">
+                    <img src="img/piano-santambrose.jpg" alt="Pianta della Basilica di Sant'Ambrogio, Milano">
+                    <figcaption>Sant'Ambrogio — pianta: 1. Quadriportico, 2. Navata centrale (10m), 3. Navate laterali (5m), 4. Campanili, 5. Presbiterio.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="opera-block">
+            <h3>Duomo di Modena (Cattedrale di San Geminiano)</h3>
+            <div class="opera-meta">dal 1099 · Modena · Architetto: Lanfranco · Scultore: Wiligelmo</div>
+            <ul>
+                <li>Dedicato a <strong>san Geminiano</strong>, vescovo e patrono; spoglie trasferite nel 1106</li>
+                <li><strong>Lanfranco</strong> (architetto) e <strong>Wiligelmo</strong> (scultore): tra i primi "maestri" noti per nome, ricordati da iscrizioni murate sulla chiesa</li>
+                <li>Interno: <strong>tre navate</strong>, colonne alternate a pilastri, tre livelli in altezza (arcate, matroneo con trifore, finestre alte)</li>
+                <li>Aspetto <strong>austero ed essenziale</strong> — mattoni a faccia vista</li>
+                <li>Facciata a salienti con <strong>protiro</strong> (leoni stilofori), triplici archetti, rosone aggiunto dopo (gotico)</li>
+                <li><strong>4 lastre scolpite da Wiligelmo</strong> sulla facciata: episodi dalla Genesi (creazione → Diluvio universale) — vedi sezione scultura</li>
+            </ul>
+            <div class="fig-row">
+                <figure class="fig">
+                    <img src="img/Duomo-di-Modena.jpg" alt="Facciata del Duomo di Modena">
+                    <figcaption>Duomo di Modena, dal 1099 — facciata a salienti con protiro, leoni stilofori e triplici archetti.</figcaption>
+                </figure>
+                <figure class="fig">
+                    <img src="img/duomo-modena.jpg" alt="Navata interna del Duomo di Modena">
+                    <figcaption>Duomo di Modena — navata centrale con i tre livelli: arcate, matroneo a trifore, finestre superiori. Mattoni a faccia vista.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="opera-block">
+            <h3>Piazza del Duomo — Pisa</h3>
+            <div class="opera-meta">XI–XIV sec. · Pisa · Duomo: dal 1063, Buscheto e Rainaldo</div>
+            <ul>
+                <li>Pisa era potenza marittima, commerciale e militare; il complesso celebra il potere della città (costruito anche grazie al bottino di guerre contro gli Arabi)</li>
+                <li>Complesso formato da 4 edifici: <strong>Cattedrale</strong>, <strong>Battistero</strong> (dal 1118), <strong>Campanile</strong> (Torre pendente), <strong>Camposanto</strong> (dal Trecento)</li>
+                <li>Accompagnava il cristiano in <strong>ogni fase della vita</strong>: battesimo → preghiera → morte e sepoltura</li>
+                <li><strong>Duomo</strong>: facciata di Buscheto e Rainaldo, stile romanico pisano, <strong>quattro livelli di logge</strong> con arcatelle, gioco di chiaroscuro</li>
+                <li><strong>Torre pendente</strong>: pianta circolare, 57 metri, inclinazione causata dal terreno cedevole; lavori di consolidamento 1990–2001</li>
+                <li>Contrasto tra <strong>pietra chiara</strong> e <strong>manto erboso</strong> verde</li>
+            </ul>
+            <div class="fig-row">
+                <figure class="fig">
+                    <img src="img/miracoli-pisa.jpg" alt="Piazza dei Miracoli, Pisa — veduta d'insieme">
+                    <figcaption>Piazza dei Miracoli, Pisa — Cattedrale, Battistero, Campanile (Torre pendente) e Camposanto. Contrasto pietra chiara / manto erboso.</figcaption>
+                </figure>
+                <figure class="fig">
+                    <img src="img/pisa-facciata.jpg" alt="Facciata del Duomo di Pisa">
+                    <figcaption>Duomo di Pisa, facciata dal 1162 — quattro livelli di logge con arcatelle che creano un fitto gioco di chiaroscuro.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="opera-block">
+            <h3>Basilica di San Marco — Venezia</h3>
+            <div class="opera-meta">1063–XIII sec. · Venezia · Patrimonio UNESCO dal 1987</div>
+            <ul>
+                <li>Costruita per custodire le <strong>reliquie di san Marco</strong>, sottratte ad Alessandria d'Egitto da due mercanti veneziani nell'828</li>
+                <li>Costruita e ricostruita più volte; la forma attuale iniziata nel 1063, consacrata nel 1094</li>
+                <li>Pianta a <strong>croce greca</strong> (bracci uguali), <strong>cinque cupole a bulbo</strong> di gusto orientale</li>
+                <li>Fortissima influenza dell'<strong>arte bizantina</strong></li>
+                <li>Esterno: aspetto originario in mattoni oggi coperto da rivestimenti marmorei, sculture e <strong>mosaici</strong> aggiunti dal Duecento</li>
+                <li>Interno: pareti, soffitti e cupole interamente rivestiti di <strong>mosaici dorati</strong> → spazio unitario e luminoso, quasi annulla gli spigoli</li>
+                <li>Simbolo di Venezia, <strong>centro della vita pubblica e religiosa</strong>: elezioni del doge, ricorrenze civiche e religiose</li>
+                <li><strong>Minaccia</strong>: acqua alta e surriscaldamento climatico danneggiano mosaici, pavimenti e pareti (alluvione novembre 2019)</li>
+            </ul>
+            <div class="fig-row">
+                <figure class="fig">
+                    <img src="img/basilica-venezia.jpg" alt="Facciata esterna della Basilica di San Marco, Venezia">
+                    <figcaption>Basilica di San Marco, Venezia — facciata arricchita dal Duecento con rivestimenti marmorei, sculture e mosaici.</figcaption>
+                </figure>
+                <figure class="fig">
+                    <img src="img/basilica-san-marco-interno.jpg" alt="Interno della Basilica di San Marco con mosaici dorati">
+                    <figcaption>San Marco — interno interamente rivestito di mosaici dorati. Le superfici luminose annullano gli spigoli creando uno spazio unitario.</figcaption>
+                </figure>
+            </div>
+            <figure class="fig">
+                <img src="img/basilica-venezia-croce.jpg" alt="Pianta a croce greca della Basilica di San Marco">
+                <figcaption>San Marco — pianta a croce greca (bracci uguali) con cinque cupole a bulbo di influenza bizantina.</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h2>6. La scultura romanica</h2>
+        <p>Scultura e architettura sono <strong>strettamente legate</strong>. Le sculture decorano gli edifici nei punti più visibili (portali, capitelli, facciate) con funzione didattica: istruire i fedeli, ricordare la lotta tra bene e male. Tecniche principali: <strong>bassorilievo</strong> e <strong>altorilievo</strong>.</p>
+        <h3>I portali</h3>
+        <p>Il portale segna il confine tra mondo esterno (peccato) e spazio sacro. Le sculture nella <strong>lunetta</strong> esortano i fedeli. Esempio: portale di <strong>Sainte-Madeleine a Vézelay</strong> (Francia, 1120–1135) — Cristo affida agli apostoli il compito di diffondere il Vangelo; è raffigurato il doppio delle altre figure per indicare la sua importanza.</p>
+        <h3>I capitelli</h3>
+        <p>Nel Romanico il capitello non segue più gli ordini classici: diventa superficie per <strong>scene sacre e simboliche</strong>. Esempi: Adamo ed Eva (Antelami, Parma); sirene e mostri (cripta del Duomo di Modena) che ammoniscono contro la doppiezza e la falsità.</p>
+        <h3>Scene di vita quotidiana</h3>
+        <p>Anche la vita terrena rimanda a Dio: i <strong>"cicli dei mesi"</strong> raffigurano le attività agricole di ogni mese. Esempio: <em>Mese di settembre</em> di Antelami (Battistero di Parma) — vendemmia con contadino e bilancia (segno zodiacale).</p>
+        <figure class="fig">
+            <img src="img/portale-vezelay.jpg" alt="Portale della Basilica di Sainte-Madeleine a Vézelay">
+            <figcaption>Portale di Sainte-Madeleine, Vézelay, 1120–1135 — nella lunetta, Cristo affida agli apostoli il compito di diffondere il Vangelo. Notare la differenza di scala: Cristo è il doppio degli apostoli.</figcaption>
+        </figure>
+
+        <div class="opera-block">
+            <h3>Wiligelmo — Lastre della Genesi</h3>
+            <div class="opera-meta">1099–1106 · bassorilievo in marmo, 282×100 cm · Cattedrale di San Geminiano, Modena</div>
+            <ul>
+                <li><strong>4 lastre</strong> sulla facciata del Duomo: dalla Creazione al Diluvio universale</li>
+                <li>Lastra della Creazione: <strong>Dio in una mandorla</strong> retta da angeli → creazione di Adamo → Eva nasce dal corpo di Adamo → Adamo ed Eva davanti all'albero con il <strong>serpente</strong></li>
+                <li>Corpi <strong>massicci</strong> ma con senso di <strong>spazio tridimensionale</strong></li>
+                <li>I gesti esprimono con <strong>immediatezza</strong> la trama del racconto</li>
+            </ul>
+            <figure class="fig wide">
+                <img src="img/Creazione_Wiligelmo.jpg" alt="Wiligelmo, Creazione di Adamo ed Eva e Peccato originale">
+                <figcaption>Wiligelmo, Creazione di Adamo ed Eva e Peccato originale, 1099–1106 — bassorilievo in marmo, 282×100 cm, facciata del Duomo di Modena. Da sinistra: Dio nella mandorla, creazione di Adamo, nascita di Eva, tentazione del serpente.</figcaption>
+            </figure>
+        </div>
+
+        <div class="opera-block">
+            <h3>Benedetto Antelami — Deposizione di Cristo dalla croce</h3>
+            <div class="opera-meta">1178 · rilievo in marmo rosso di Verona, 110×230 cm · Duomo di Parma</div>
+            <ul>
+                <li>Composizione <strong>ordinata e simmetrica</strong>; la croce al centro <strong>divide la scena in due gruppi</strong></li>
+                <li><strong>A sinistra</strong> (i credenti): Giuseppe d'Arimatea e Nicodemo staccano il corpo; Madonna che sfiora la mano del figlio; san Giovanni e tre donne; arcangelo Gabriele; personificazione del <strong>Sole</strong> (luce divina)</li>
+                <li><strong>A destra</strong> (i non credenti): la <strong>Sinagoga</strong> (religione ebraica) costretta a chinare il capo; centurione romano; soldati che si giocano a dadi la veste di Gesù; personificazione della <strong>Luna</strong> (tenebre e male)</li>
+                <li>Pose rigide ma espressioni <strong>intense</strong>; composizione <strong>movimentata</strong> che suggerisce profondità</li>
+            </ul>
+            <figure class="fig wide">
+                <img src="img/Benedetto_Antelami_Deposizione_Parma.jpg" alt="Antelami, Deposizione di Cristo dalla croce">
+                <figcaption>Benedetto Antelami, Deposizione di Cristo dalla croce, 1178 — marmo rosso di Verona, 110×230 cm, Duomo di Parma. La croce divide credenti (sinistra, col Sole) dai non credenti (destra, con la Luna).</figcaption>
+            </figure>
+            <figure class="fig">
+                <img src="img/personaggi.jpg" alt="Schema dei personaggi nella Deposizione di Antelami">
+                <figcaption>Schema della Deposizione — personaggi identificati: a. Cristo, b. Giuseppe d'Arimatea, c. Nicodemo, d. Chiesa, e. Pie donne, f. Arcangelo Gabriele, g. Arcangelo Raffaele, h. Sinagoga, i. Maria, l. Centurione, m. Giovanni evangelista, n. Soldati, o. Ebrei, p. Sole, q. Luna.</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section>
+        <h2>7. Vocabolario tecnico</h2>
+        <div class="glossary">
+            <div class="glossary-item"><div class="glossary-term">abbazia</div><div class="glossary-def">Comunità di monaci guidata da un abate; anche l'insieme degli edifici dove risiede.</div></div>
+            <div class="glossary-item"><div class="glossary-term">altorilievo</div><div class="glossary-def">Scultura che sporge notevolmente dalla superficie di fondo (più del bassorilievo).</div></div>
+            <div class="glossary-item"><div class="glossary-term">archetti</div><div class="glossary-def">Piccoli archi decorativi lungo le facciate; se addossati al muro si dicono "ciechi".</div></div>
+            <div class="glossary-item"><div class="glossary-term">bassorilievo</div><div class="glossary-def">Scultura che sporge poco dalla superficie di fondo.</div></div>
+            <div class="glossary-item"><div class="glossary-term">bestiari</div><div class="glossary-def">Libri medievali che illustrano animali (reali o fantastici) come simboli di vizi e virtù.</div></div>
+            <div class="glossary-item"><div class="glossary-term">bifora</div><div class="glossary-def">Finestra con due aperture divise da una colonnina.</div></div>
+            <div class="glossary-item"><div class="glossary-term">campata</div><div class="glossary-def">Lo spazio coperto da una volta, compreso tra i pilastri.</div></div>
+            <div class="glossary-item"><div class="glossary-term">cattedrale</div><div class="glossary-def">Chiesa principale di una diocesi; da "cattedra" (trono del vescovo).</div></div>
+            <div class="glossary-item"><div class="glossary-term">chiostro</div><div class="glossary-def">Cortile interno porticato di un'abbazia, attorno al quale si affacciano gli edifici principali.</div></div>
+            <div class="glossary-item"><div class="glossary-term">coro</div><div class="glossary-def">Zona dell'abside con i sedili per cantori e ecclesiastici.</div></div>
+            <div class="glossary-item"><div class="glossary-term">costoloni</div><div class="glossary-def">Elementi di rinforzo (nervature) lungo gli archi della volta a crociera.</div></div>
+            <div class="glossary-item"><div class="glossary-term">cripta</div><div class="glossary-def">Ambiente sotterraneo sotto il presbiterio; custodisce reliquie e sepolture.</div></div>
+            <div class="glossary-item"><div class="glossary-term">croce greca</div><div class="glossary-def">Pianta con bracci di uguale lunghezza (es. San Marco).</div></div>
+            <div class="glossary-item"><div class="glossary-term">croce latina</div><div class="glossary-def">Pianta con bracci disuguali; la navata è più lunga del transetto.</div></div>
+            <div class="glossary-item"><div class="glossary-term">facciata a capanna</div><div class="glossary-def">Profilo a triangolo semplice.</div></div>
+            <div class="glossary-item"><div class="glossary-term">facciata a salienti</div><div class="glossary-def">Mostra all'esterno le diverse altezze delle navate (centrale più alta).</div></div>
+            <div class="glossary-item"><div class="glossary-term">lunetta</div><div class="glossary-def">Spazio semicircolare sopra un portale, tra l'architrave e l'arco.</div></div>
+            <div class="glossary-item"><div class="glossary-term">mandorla</div><div class="glossary-def">Cornice a forma di mandorla che racchiude figure sacre (Cristo, Dio, Vergine).</div></div>
+            <div class="glossary-item"><div class="glossary-term">matroneo</div><div class="glossary-def">Galleria sopra le navate laterali, riservata alle donne; dal latino "matrona".</div></div>
+            <div class="glossary-item"><div class="glossary-term">miniatura</div><div class="glossary-def">Piccolo disegno decorativo nei manoscritti; da "minio" (pigmento rosso).</div></div>
+            <div class="glossary-item"><div class="glossary-term">monofora</div><div class="glossary-def">Finestra con una sola apertura.</div></div>
+            <div class="glossary-item"><div class="glossary-term">navata</div><div class="glossary-def">Spazio longitudinale della chiesa, delimitato da colonne o pilastri.</div></div>
+            <div class="glossary-item"><div class="glossary-term">presbiterio</div><div class="glossary-def">Zona riservata ai sacerdoti, spesso sopraelevata.</div></div>
+            <div class="glossary-item"><div class="glossary-term">protiro</div><div class="glossary-def">Piccolo portico sporgente sopra il portale principale.</div></div>
+            <div class="glossary-item"><div class="glossary-term">reliquie</div><div class="glossary-def">Resti del corpo, indumenti o oggetti legati a un santo.</div></div>
+            <div class="glossary-item"><div class="glossary-term">scriptorium</div><div class="glossary-def">Sala dell'abbazia dove i monaci copiavano e decoravano i manoscritti.</div></div>
+            <div class="glossary-item"><div class="glossary-term">stilofori</div><div class="glossary-def">Animali (spesso leoni) che reggono le colonne del protiro; "portatori di colonna".</div></div>
+            <div class="glossary-item"><div class="glossary-term">strombato</div><div class="glossary-def">Di forma svasata, come l'imboccatura di una tromba (tipico dei portali romanici).</div></div>
+            <div class="glossary-item"><div class="glossary-term">transetto</div><div class="glossary-def">Braccio trasversale che incrocia la navata, formando la croce.</div></div>
+            <div class="glossary-item"><div class="glossary-term">trifora</div><div class="glossary-def">Finestra con tre aperture divise da colonnine.</div></div>
+            <div class="glossary-item"><div class="glossary-term">vele</div><div class="glossary-def">Le quattro superfici curve della volta a crociera.</div></div>
+            <div class="glossary-item"><div class="glossary-term">volta a crociera</div><div class="glossary-def">Copertura formata dall'incrocio di due archi; scarica il peso sui 4 pilastri angolari.</div></div>
+        </div>
+    </section>
+
+    <footer>Appunti di studio · Unità 6: Il Romanico · XI–XIII secolo</footer>
+
+</div>
+</body>
+</html>

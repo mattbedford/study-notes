@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz — Il Romanico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f4;
+            --text: #2c2418;
+            --text-light: #6b5d4d;
+            --accent: #5b7a3a;
+            --accent-dark: #3d5427;
+            --border: #d4c5b0;
+            --highlight: #f5ead6;
+            --correct: #4a7c3a;
+            --correct-bg: #e8f5e2;
+            --wrong: #b94a3a;
+            --wrong-bg: #fce8e5;
+            --neutral-bg: #f0ebe3;
+            --input-bg: #fff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 17px; }
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+        @media (max-width: 600px) { .page { padding: 1.5rem 1.2rem 3rem; } }
+
+        /* NAV */
+        .back-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+        .back-link:hover { color: var(--text); }
+
+        header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 2.5rem;
+        }
+        header .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+        }
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text);
+        }
+        header .subtitle {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 0.3rem;
+        }
+
+        /* SECTION NAV */
+        .section-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            padding: 0.8rem 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-nav button {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--input-bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .section-nav button:hover { border-color: var(--accent); }
+        .section-nav button.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* QUIZ SECTIONS */
+        .quiz-section { display: none; }
+        .quiz-section.active { display: block; }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--accent-dark);
+            margin-bottom: 0.5rem;
+        }
+        .section-intro {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        /* EXERCISE BLOCKS */
+        .exercise {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            transition: border-color 0.2s;
+        }
+        .exercise.correct { border-color: var(--correct); background: var(--correct-bg); }
+        .exercise.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+        .exercise-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 0.6rem;
+        }
+
+        /* CLOZE */
+        .cloze-text {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        .cloze-text .blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--accent);
+            padding: 0.1rem 0.3rem;
+            margin: 0 0.15rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            background: transparent;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .cloze-text .blank:focus { border-color: var(--accent-dark); }
+        .cloze-text .blank.correct-input {
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 700;
+        }
+        .cloze-text .blank.wrong-input {
+            border-color: var(--wrong);
+            color: var(--wrong);
+        }
+
+        .cloze-answer {
+            display: none;
+            margin-top: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--correct);
+            font-weight: 600;
+        }
+        .cloze-answer.visible { display: block; }
+
+        /* V/F */
+        .vf-statement {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            font-style: italic;
+        }
+        .vf-buttons {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+        .vf-btn {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.45rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: var(--input-bg);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .vf-btn:hover { border-color: var(--accent); }
+        .vf-btn.selected-correct {
+            background: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+        .vf-btn.selected-wrong {
+            background: var(--wrong-bg);
+            border-color: var(--wrong);
+            color: var(--wrong);
+        }
+        .vf-explanation {
+            display: none;
+            font-size: 0.88rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+        }
+        .vf-explanation.visible { display: block; }
+        .vf-explanation.is-correct { background: var(--correct-bg); color: var(--correct); }
+        .vf-explanation.is-wrong { background: var(--wrong-bg); color: var(--wrong); }
+
+        /* MATCHING */
+        .match-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        @media (max-width: 500px) {
+            .match-row { grid-template-columns: 1fr; gap: 0.3rem; }
+            .match-arrow { display: none; }
+        }
+        .match-fixed {
+            background: var(--neutral-bg);
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .match-arrow { color: var(--text-light); text-align: center; }
+        .match-select {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.88rem;
+            padding: 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            background: var(--input-bg);
+            color: var(--text);
+            cursor: pointer;
+            appearance: auto;
+        }
+        .match-select.correct-input { border-color: var(--correct); background: var(--correct-bg); }
+        .match-select.wrong-input { border-color: var(--wrong); background: var(--wrong-bg); }
+
+        /* BUTTONS */
+        .check-btn {
+            display: inline-block;
+            font-family: 'Source Serif 4', serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            margin-top: 1rem;
+        }
+        .check-btn:hover { opacity: 0.85; }
+        .check-btn.primary { background: var(--accent); color: #fff; }
+        .check-btn.secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            margin-left: 0.5rem;
+        }
+
+        /* SCORE */
+        .score-bar {
+            background: var(--neutral-bg);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        .score-bar .score-num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-dark);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <a href="../index.html" class="back-link">← torna all'indice</a>
+
+    <header>
+        <div class="label">Unità 6 · Quiz interattivi</div>
+        <h1>Il Romanico</h1>
+        <div class="subtitle">Testi bucati · Vero o Falso · Abbina</div>
+    </header>
+
+    <div class="section-nav">
+        <button class="active" onclick="showSection('cloze')">✏️ Testi bucati</button>
+        <button onclick="showSection('vf')">✅ Vero o Falso</button>
+        <button onclick="showSection('match')">🔗 Abbina</button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TESTI BUCATI -->
+    <!-- ============================================ -->
+    <div id="section-cloze" class="quiz-section active">
+        <h2>Testi bucati</h2>
+        <p class="section-intro">Completa i testi con il termine corretto. Poi clicca "Controlla" per verificare.</p>
+
+        <!-- CLOZE 1: Chiesa romanica -->
+        <div class="exercise" id="cloze-1">
+            <div class="exercise-label">Esercizio 1 — La chiesa romanica</div>
+            <div class="cloze-text">
+                La maggior parte delle chiese romaniche è a pianta <input type="text" class="blank" data-answer="longitudinale">, a forma di <input type="text" class="blank" data-answer="croce latina">. L'interno è diviso in tre o più <input type="text" class="blank" data-answer="navate">. Sotto il presbiterio sopraelevato si trova la <input type="text" class="blank" data-answer="cripta">, dove sono custodite le reliquie. Sopra le navate laterali corre il <input type="text" class="blank" data-answer="matroneo">, una galleria riservata alle donne.
+            </div>
+            <div class="cloze-answer" id="cloze-1-answer">Risposte: longitudinale, croce latina, navate, cripta, matroneo</div>
+        </div>
+
+        <!-- CLOZE 2: Coperture e facciate -->
+        <div class="exercise" id="cloze-2">
+            <div class="exercise-label">Esercizio 2 — Coperture e facciate</div>
+            <div class="cloze-text">
+                La copertura più diffusa è la <input type="text" class="blank" data-answer="volta a crociera">, che scarica il peso su quattro pilastri. Lo spazio coperto da una volta si chiama <input type="text" class="blank" data-answer="campata">. Le facciate possono essere a <input type="text" class="blank" data-answer="capanna"> (profilo a triangolo) o a <input type="text" class="blank" data-answer="salienti"> (che mostra le diverse altezze delle navate). Il portico sporgente sul portale si chiama <input type="text" class="blank" data-answer="protiro">.
+            </div>
+            <div class="cloze-answer" id="cloze-2-answer">Risposte: volta a crociera, campata, capanna, salienti, protiro</div>
+        </div>
+
+        <!-- CLOZE 3: Sant'Ambrogio -->
+        <div class="exercise" id="cloze-3">
+            <div class="exercise-label">Esercizio 3 — Basilica di Sant'Ambrogio</div>
+            <div class="cloze-text">
+                La Basilica di Sant'Ambrogio si trova a <input type="text" class="blank" data-answer="Milano">. Si accede attraverso un <input type="text" class="blank" data-answer="quadriportico"> con archi a tutto sesto. Le volte a crociera della navata centrale misurano <input type="text" class="blank" data-answer="10"> metri per lato. I pilastri sono detti <input type="text" class="blank" data-answer="compositi"> perché formati da più supporti verticali uniti. La basilica servì da <input type="text" class="blank" data-answer="modello"> per molte chiese successive.
+            </div>
+            <div class="cloze-answer" id="cloze-3-answer">Risposte: Milano, quadriportico, 10, compositi, modello</div>
+        </div>
+
+        <!-- CLOZE 4: Duomo di Modena -->
+        <div class="exercise" id="cloze-4">
+            <div class="exercise-label">Esercizio 4 — Duomo di Modena</div>
+            <div class="cloze-text">
+                I lavori del Duomo di Modena cominciarono nel <input type="text" class="blank" data-answer="1099">. L'architetto si chiamava <input type="text" class="blank" data-answer="Lanfranco"> e lo scultore <input type="text" class="blank" data-answer="Wiligelmo">. Sulla facciata si trovano quattro <input type="text" class="blank" data-answer="lastre"> scolpite con episodi della Genesi. Le figure di Wiligelmo hanno corpi <input type="text" class="blank" data-answer="massicci"> ma sembrano muoversi in uno spazio tridimensionale.
+            </div>
+            <div class="cloze-answer" id="cloze-4-answer">Risposte: 1099, Lanfranco, Wiligelmo, lastre, massicci</div>
+        </div>
+
+        <!-- CLOZE 5: San Marco -->
+        <div class="exercise" id="cloze-5">
+            <div class="exercise-label">Esercizio 5 — Basilica di San Marco</div>
+            <div class="cloze-text">
+                La Basilica di San Marco a Venezia fu costruita per custodire le reliquie di <input type="text" class="blank" data-answer="san Marco">, portate da <input type="text" class="blank" data-answer="Alessandria d'Egitto"> nell'828. Ha una pianta a <input type="text" class="blank" data-answer="croce greca"> e cinque cupole a <input type="text" class="blank" data-answer="bulbo">. L'interno è rivestito di <input type="text" class="blank" data-answer="mosaici"> dorati. È patrimonio UNESCO dal <input type="text" class="blank" data-answer="1987">.
+            </div>
+            <div class="cloze-answer" id="cloze-5-answer">Risposte: san Marco, Alessandria d'Egitto, croce greca, bulbo, mosaici, 1987</div>
+        </div>
+
+        <!-- CLOZE 6: Deposizione Antelami -->
+        <div class="exercise" id="cloze-6">
+            <div class="exercise-label">Esercizio 6 — Deposizione di Antelami</div>
+            <div class="cloze-text">
+                Nel 1178 lo scultore <input type="text" class="blank" data-answer="Benedetto Antelami"> realizzò la Deposizione di Cristo per il Duomo di <input type="text" class="blank" data-answer="Parma">. L'opera è un rilievo in marmo rosso di <input type="text" class="blank" data-answer="Verona">. La croce al centro divide la scena in due gruppi: a sinistra i <input type="text" class="blank" data-answer="credenti">, a destra i <input type="text" class="blank" data-answer="non credenti">. La personificazione del <input type="text" class="blank" data-answer="Sole"> simboleggia la luce divina, quella della Luna le tenebre.
+            </div>
+            <div class="cloze-answer" id="cloze-6-answer">Risposte: Benedetto Antelami, Parma, Verona, credenti, non credenti, Sole</div>
+        </div>
+
+        <!-- CLOZE 7: Varianti regionali -->
+        <div class="exercise" id="cloze-7">
+            <div class="exercise-label">Esercizio 7 — Varianti regionali</div>
+            <div class="cloze-text">
+                Il Romanico <input type="text" class="blank" data-answer="lombardo"> usa rientranze e sporgenze per creare effetti di chiaroscuro, con motivi ad <input type="text" class="blank" data-answer="archetti"> decorativi. Il Romanico <input type="text" class="blank" data-answer="fiorentino"> mantiene una forte continuità con l'architettura classica e usa decorazione geometrica con pietre di diversi <input type="text" class="blank" data-answer="colori">. Il Romanico <input type="text" class="blank" data-answer="pugliese"> mescola influenze bizantine, arabe e normanne.
+            </div>
+            <div class="cloze-answer" id="cloze-7-answer">Risposte: lombardo, archetti, fiorentino, colori, pugliese</div>
+        </div>
+
+        <button class="check-btn primary" onclick="checkCloze()">Controlla</button>
+        <button class="check-btn secondary" onclick="showClozeAnswers()">Mostra risposte</button>
+        <button class="check-btn secondary" onclick="resetCloze()">Ricomincia</button>
+
+        <div class="score-bar" id="cloze-score" style="display:none;">
+            <div class="score-num" id="cloze-score-num"></div>
+            <div>risposte corrette</div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- VERO O FALSO -->
+    <!-- ============================================ -->
+    <div id="section-vf" class="quiz-section">
+        <h2>Vero o Falso</h2>
+        <p class="section-intro">Leggi ogni affermazione e decidi: Vero o Falso? Se è falso, leggi la correzione.</p>
+
+        <div class="exercise" id="vf-1">
+            <div class="exercise-label">Affermazione 1</div>
+            <div class="vf-statement">«La Basilica di San Marco ha una pianta a croce latina.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-1')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-1')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-1-exp">FALSO — San Marco ha pianta a <strong>croce greca</strong> (bracci uguali), non croce latina.</div>
+        </div>
+
+        <div class="exercise" id="vf-2">
+            <div class="exercise-label">Affermazione 2</div>
+            <div class="vf-statement">«Le sculture romaniche servivano a raccontare le storie della Bibbia a un popolo per lo più analfabeta.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-2')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-2')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-2-exp">VERO — Le sculture funzionavano come un «libro illustrato» per i fedeli che non sapevano leggere.</div>
+        </div>
+
+        <div class="exercise" id="vf-3">
+            <div class="exercise-label">Affermazione 3</div>
+            <div class="vf-statement">«La Torre di Pisa è alta 37 metri.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-3')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-3')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-3-exp">FALSO — La Torre pendente è alta <strong>57 metri</strong>, non 37.</div>
+        </div>
+
+        <div class="exercise" id="vf-4">
+            <div class="exercise-label">Affermazione 4</div>
+            <div class="vf-statement">«Wiligelmo era l'architetto del Duomo di Modena.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-4')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-4')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-4-exp">FALSO — Wiligelmo era lo <strong>scultore</strong>. L'architetto era <strong>Lanfranco</strong>.</div>
+        </div>
+
+        <div class="exercise" id="vf-5">
+            <div class="exercise-label">Affermazione 5</div>
+            <div class="vf-statement">«Il matroneo è un ambiente sotterraneo dove sono custodite le reliquie.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-5')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-5')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-5-exp">FALSO — Quello è la <strong>cripta</strong>. Il matroneo è la <strong>galleria sopra le navate laterali</strong>, riservata alle donne.</div>
+        </div>
+
+        <div class="exercise" id="vf-6">
+            <div class="exercise-label">Affermazione 6</div>
+            <div class="vf-statement">«Il Romanico pugliese risente delle influenze bizantine, arabe e normanne.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-6')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-6')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-6-exp">VERO — L'Italia meridionale fu dominata da Bizantini, Arabi e poi Normanni, e queste influenze si mescolano nell'architettura.</div>
+        </div>
+
+        <div class="exercise" id="vf-7">
+            <div class="exercise-label">Affermazione 7</div>
+            <div class="vf-statement">«Nella Deposizione di Antelami, il Sole rappresenta il male e la Luna la luce divina.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-7')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-7')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-7-exp">FALSO — È il contrario: il <strong>Sole</strong> simboleggia la <strong>luce divina</strong> (lato dei credenti) e la <strong>Luna</strong> simboleggia le <strong>tenebre e il male</strong> (lato dei non credenti).</div>
+        </div>
+
+        <div class="exercise" id="vf-8">
+            <div class="exercise-label">Affermazione 8</div>
+            <div class="vf-statement">«La Basilica di Sant'Ambrogio a Milano è stata il modello per numerose chiese successive.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-8')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-8')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-8-exp">VERO — Soprattutto per l'uso pionieristico delle volte a crociera.</div>
+        </div>
+
+        <div class="exercise" id="vf-9">
+            <div class="exercise-label">Affermazione 9</div>
+            <div class="vf-statement">«Il Battistero di San Giovanni a Firenze ha una pianta circolare.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-9')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-9')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-9-exp">FALSO — Il Battistero ha pianta <strong>ottagonale</strong>, non circolare.</div>
+        </div>
+
+        <div class="exercise" id="vf-10">
+            <div class="exercise-label">Affermazione 10</div>
+            <div class="vf-statement">«Benedetto da Norcia fondò nel VI secolo una comunità monastica basata su lavoro e preghiera.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-10')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-10')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-10-exp">VERO — La Regola benedettina univa «ora et labora» (preghiera e lavoro).</div>
+        </div>
+
+        <div class="exercise" id="vf-11">
+            <div class="exercise-label">Affermazione 11</div>
+            <div class="vf-statement">«Le reliquie di San Marco furono portate a Venezia da Roma.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-11')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-11')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-11-exp">FALSO — Le reliquie furono portate da <strong>Alessandria d'Egitto</strong> da due mercanti veneziani nell'828.</div>
+        </div>
+
+        <div class="exercise" id="vf-12">
+            <div class="exercise-label">Affermazione 12</div>
+            <div class="vf-statement">«La lunetta è lo spazio semicircolare sopra un portale.»</div>
+            <div class="vf-buttons">
+                <button class="vf-btn" onclick="checkVF(this, true, 'vf-12')">Vero</button>
+                <button class="vf-btn" onclick="checkVF(this, false, 'vf-12')">Falso</button>
+            </div>
+            <div class="vf-explanation" id="vf-12-exp">VERO — Lo spazio tra l'architrave e l'arco, spesso decorato con sculture.</div>
+        </div>
+
+        <div class="score-bar" id="vf-score" style="display:none;">
+            <div class="score-num" id="vf-score-num"></div>
+            <div>risposte corrette su 12</div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ABBINA -->
+    <!-- ============================================ -->
+    <div id="section-match" class="quiz-section">
+        <h2>Abbina</h2>
+        <p class="section-intro">Collega ogni edificio alla sua città e alla sua caratteristica principale.</p>
+
+        <!-- MATCH 1: Edificio → Città -->
+        <div class="exercise" id="match-1">
+            <div class="exercise-label">Esercizio 1 — Edificio → Città</div>
+            <div class="match-grid">
+
+                <div class="match-row">
+                    <div class="match-fixed">Basilica di Sant'Ambrogio</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Milano">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Cattedrale di San Geminiano</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Modena">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Basilica di San Marco</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Venezia">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Cattedrale di San Nicola</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Bari">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Battistero di San Giovanni</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Firenze">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Basilica di San Michele</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Pavia">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Deposizione di Cristo</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Parma">
+                        <option value="">scegli…</option>
+                        <option>Milano</option>
+                        <option>Modena</option>
+                        <option>Pisa</option>
+                        <option>Venezia</option>
+                        <option>Bari</option>
+                        <option>Firenze</option>
+                        <option>Pavia</option>
+                        <option>Parma</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MATCH 2: Caratteristica → Edificio -->
+        <div class="exercise" id="match-2">
+            <div class="exercise-label">Esercizio 2 — Caratteristica → Edificio</div>
+            <div class="match-grid">
+
+                <div class="match-row">
+                    <div class="match-fixed">Pianta a croce greca, 5 cupole a bulbo</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="San Marco, Venezia">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Quadriportico, pilastri compositi</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Sant'Ambrogio, Milano">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Lastre di Wiligelmo, facciata con protiro</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Duomo di Modena">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">4 livelli di logge, torre pendente</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Piazza dei Miracoli, Pisa">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Due torri normanne, buoi stilofori</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="San Nicola, Bari">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">Archetti su colonnine, portali strombati</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="San Michele, Pavia">
+                        <option value="">scegli…</option>
+                        <option>San Marco, Venezia</option>
+                        <option>Sant'Ambrogio, Milano</option>
+                        <option>Duomo di Modena</option>
+                        <option>Piazza dei Miracoli, Pisa</option>
+                        <option>San Nicola, Bari</option>
+                        <option>San Michele, Pavia</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MATCH 3: Termine → Definizione -->
+        <div class="exercise" id="match-3">
+            <div class="exercise-label">Esercizio 3 — Vocabolario: Termine → Definizione</div>
+            <div class="match-grid">
+
+                <div class="match-row">
+                    <div class="match-fixed">mandorla</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Cornice a forma di frutto che racchiude figure sacre">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">cripta</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Ambiente sotterraneo con reliquie">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">lunetta</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Spazio semicircolare sopra un portale">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">stilofori</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Animali che reggono le colonne">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">matroneo</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Galleria sopra le navate laterali">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+                <div class="match-row">
+                    <div class="match-fixed">protiro</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="Portico sporgente sul portale">
+                        <option value="">scegli…</option>
+                        <option>Galleria sopra le navate laterali</option>
+                        <option>Cornice a forma di frutto che racchiude figure sacre</option>
+                        <option>Spazio semicircolare sopra un portale</option>
+                        <option>Animali che reggono le colonne</option>
+                        <option>Ambiente sotterraneo con reliquie</option>
+                        <option>Portico sporgente sul portale</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <button class="check-btn primary" onclick="checkMatch()">Controlla</button>
+        <button class="check-btn secondary" onclick="resetMatch()">Ricomincia</button>
+
+        <div class="score-bar" id="match-score" style="display:none;">
+            <div class="score-num" id="match-score-num"></div>
+            <div>risposte corrette su 19</div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="notes.html">📖 Torna agli appunti</a> · Il Romanico · Unità 6
+    </footer>
+
+</div>
+
+<script>
+    // === SECTION NAV ===
+    function showSection(id) {
+        document.querySelectorAll('.quiz-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.section-nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('section-' + id).classList.add('active');
+        event.target.classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // === CLOZE ===
+    function normalize(s) {
+        return s.trim().toLowerCase()
+            .replace(/['']/g, "'")
+            .replace(/\s+/g, ' ')
+            .replace(/[.,;:!?]/g, '');
+    }
+
+    function checkCloze() {
+        let correct = 0;
+        let total = 0;
+        document.querySelectorAll('.cloze-text .blank').forEach(input => {
+            total++;
+            const answer = normalize(input.dataset.answer);
+            const given = normalize(input.value);
+            if (given === answer) {
+                input.classList.remove('wrong-input');
+                input.classList.add('correct-input');
+                correct++;
+            } else {
+                input.classList.remove('correct-input');
+                input.classList.add('wrong-input');
+            }
+        });
+        const scoreBar = document.getElementById('cloze-score');
+        scoreBar.style.display = 'block';
+        document.getElementById('cloze-score-num').textContent = correct + ' / ' + total;
+    }
+
+    function showClozeAnswers() {
+        document.querySelectorAll('.cloze-answer').forEach(el => el.classList.add('visible'));
+        document.querySelectorAll('.cloze-text .blank').forEach(input => {
+            if (!input.value.trim()) {
+                input.value = input.dataset.answer;
+                input.classList.add('correct-input');
+            }
+        });
+    }
+
+    function resetCloze() {
+        document.querySelectorAll('.cloze-text .blank').forEach(input => {
+            input.value = '';
+            input.classList.remove('correct-input', 'wrong-input');
+        });
+        document.querySelectorAll('.cloze-answer').forEach(el => el.classList.remove('visible'));
+        document.getElementById('cloze-score').style.display = 'none';
+    }
+
+    // === VERO / FALSO ===
+    let vfScore = 0;
+    let vfAnswered = 0;
+    const vfTotal = 12;
+
+    function checkVF(btn, isCorrect, id) {
+        const exercise = document.getElementById(id);
+        const buttons = exercise.querySelectorAll('.vf-btn');
+        const exp = document.getElementById(id + '-exp');
+
+        // Prevent double-clicking
+        if (exercise.dataset.answered) return;
+        exercise.dataset.answered = 'true';
+
+        buttons.forEach(b => b.style.pointerEvents = 'none');
+
+        if (isCorrect) {
+            btn.classList.add('selected-correct');
+            exp.classList.add('is-correct');
+            vfScore++;
+        } else {
+            btn.classList.add('selected-wrong');
+            exp.classList.add('is-wrong');
+        }
+
+        exp.classList.add('visible');
+        vfAnswered++;
+
+        if (vfAnswered === vfTotal) {
+            const scoreBar = document.getElementById('vf-score');
+            scoreBar.style.display = 'block';
+            document.getElementById('vf-score-num').textContent = vfScore + ' / ' + vfTotal;
+        }
+    }
+
+    // === MATCHING ===
+    function checkMatch() {
+        let correct = 0;
+        let total = 0;
+        document.querySelectorAll('.match-select').forEach(sel => {
+            total++;
+            if (sel.value === sel.dataset.answer) {
+                sel.classList.remove('wrong-input');
+                sel.classList.add('correct-input');
+                correct++;
+            } else if (sel.value) {
+                sel.classList.remove('correct-input');
+                sel.classList.add('wrong-input');
+            }
+        });
+        const scoreBar = document.getElementById('match-score');
+        scoreBar.style.display = 'block';
+        document.getElementById('match-score-num').textContent = correct + ' / ' + total;
+    }
+
+    function resetMatch() {
+        document.querySelectorAll('.match-select').forEach(sel => {
+            sel.selectedIndex = 0;
+            sel.classList.remove('correct-input', 'wrong-input');
+        });
+        document.getElementById('match-score').style.display = 'none';
+    }
+</script>
+</body>
+</html>
