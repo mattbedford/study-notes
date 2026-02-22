@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz — Gli alimenti e la loro digestione</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f4;
+            --text: #2c2418;
+            --text-light: #6b5d4d;
+            --accent: #5b7a3a;
+            --accent-dark: #3d5427;
+            --correct: #4a7c3a;
+            --wrong: #b94a3a;
+            --border: #d4c5b0;
+            --highlight: #eef4e6;
+            --section-bg: #f0ebe3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 17px; scroll-behavior: smooth; }
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .page { max-width: 780px; margin: 0 auto; padding: 3rem 4rem; }
+        @media (max-width: 900px) { .page { padding: 2rem 1.5rem; } }
+
+        /* HEADER */
+        header { text-align: center; padding: 3rem 0 2rem; border-bottom: 2px solid var(--accent); margin-bottom: 0; }
+        header .unit-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+        header .subtitle { font-style: italic; color: var(--text-light); font-size: 1.05rem; }
+
+        /* STICKY NAV */
+        .tab-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            display: flex; gap: 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 2rem;
+            padding-top: 1rem;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.7rem 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            text-align: center;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* SECTIONS */
+        .quiz-section { display: none; margin-bottom: 3rem; }
+        .quiz-section.active { display: block; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        .section-intro { color: var(--text-light); font-size: 0.92rem; margin-bottom: 1.5rem; font-style: italic; }
+        h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text); margin-top: 2rem; margin-bottom: 0.8rem; }
+        p { margin-bottom: 0.8rem; }
+
+        /* SCORE BAR */
+        .score-bar {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent-dark);
+            background: var(--highlight);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+        .score-bar.visible { display: block; }
+
+        /* BUTTONS */
+        .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1.5rem 0; }
+        .btn {
+            font-family: 'Source Serif 4', serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-secondary { background: var(--border); color: var(--text); }
+        .btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+
+        /* ============ TESTI BUCATI ============ */
+        .cloze-block {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.3rem 1.5rem;
+            margin-bottom: 1.2rem;
+            line-height: 2;
+        }
+        .cloze-block .cloze-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        .cloze-input {
+            display: inline-block;
+            width: 10em;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            background: transparent;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.95rem;
+            padding: 0.15rem 0.3rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+        }
+        .cloze-input:focus { border-bottom-color: var(--accent); }
+        .cloze-input.correct { border-bottom-color: var(--correct); color: var(--correct); background: #f0f8ec; }
+        .cloze-input.wrong { border-bottom-color: var(--wrong); color: var(--wrong); background: #fdf0ee; }
+        .cloze-input.revealed { border-bottom-color: var(--accent); color: var(--accent); font-weight: 600; background: var(--highlight); }
+
+        /* ============ VERO O FALSO ============ */
+        .vof-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .vof-statement { font-size: 1rem; margin-bottom: 0.8rem; }
+        .vof-buttons { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .vof-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.4rem 1.4rem;
+            border-radius: 5px;
+            border: 2px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .vof-btn:hover { border-color: var(--accent); }
+        .vof-btn.selected-correct { border-color: var(--correct); background: #f0f8ec; color: var(--correct); }
+        .vof-btn.selected-wrong { border-color: var(--wrong); background: #fdf0ee; color: var(--wrong); }
+        .vof-btn.disabled { pointer-events: none; opacity: 0.5; }
+        .vof-btn.highlight-correct { border-color: var(--correct); background: #f0f8ec; color: var(--correct); }
+        .vof-explanation {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            padding: 0.6rem 0.8rem;
+            border-radius: 5px;
+            margin-top: 0.4rem;
+            display: none;
+            font-style: italic;
+        }
+        .vof-explanation.visible { display: block; background: var(--section-bg); }
+
+        /* ============ ABBINA ============ */
+        .match-block {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.3rem 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .match-block .match-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+        }
+        .match-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .match-term {
+            font-weight: 600;
+            color: var(--accent-dark);
+            min-width: 10em;
+            font-size: 0.95rem;
+        }
+        .match-select {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.9rem;
+            padding: 0.35rem 0.5rem;
+            border: 1.5px solid var(--border);
+            border-radius: 5px;
+            background: #fff;
+            color: var(--text);
+            cursor: pointer;
+            flex: 1;
+            min-width: 14em;
+        }
+        .match-select:focus { border-color: var(--accent); outline: none; }
+        .match-select.correct { border-color: var(--correct); background: #f0f8ec; }
+        .match-select.wrong { border-color: var(--wrong); background: #fdf0ee; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+
+        @media print { .tab-nav, .btn-row, .vof-buttons { display: none; } }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header>
+        <div class="unit-label">Unità 3 · Scienze — Quiz</div>
+        <h1>Gli alimenti e la loro digestione</h1>
+        <div class="subtitle">Testa le tue conoscenze</div>
+    </header>
+
+    <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="bucati">Testi bucati</button>
+        <button class="tab-btn" data-tab="vof">Vero o Falso</button>
+        <button class="tab-btn" data-tab="abbina">Abbina</button>
+    </nav>
+
+    <!-- ======================== TESTI BUCATI ======================== -->
+    <div class="quiz-section active" id="bucati">
+        <h2>Testi bucati</h2>
+        <p class="section-intro">Completa le frasi con il termine corretto, poi verifica le risposte.</p>
+        <div class="score-bar" id="bucati-score"></div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">I principi nutritivi</div>
+            <p>I nutrienti si classificano in due categorie: i <input class="cloze-input" data-answer="macronutrienti" placeholder="…">, necessari in grande quantità (carboidrati, lipidi e proteine), e i <input class="cloze-input" data-answer="micronutrienti" placeholder="…">, necessari in quantità modeste (vitamine e sali minerali).</p>
+            <p>Dal punto di vista chimico, le macromolecole sono <input class="cloze-input" data-answer="polimeri" placeholder="…">, formate da tanti <input class="cloze-input" data-answer="monomeri" placeholder="…"> uniti da legami covalenti. La digestione serve a smontare queste molecole complesse.</p>
+        </div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">Carboidrati e lipidi</div>
+            <p>L'<input class="cloze-input" data-answer="amido" placeholder="…"> è il polisaccaride di riserva energetica nelle piante, mentre il <input class="cloze-input" data-answer="glicogeno" placeholder="…"> è la riserva energetica negli animali, immagazzinata nei muscoli e nel fegato.</p>
+            <p>La <input class="cloze-input" data-answer="cellulosa" placeholder="…"> è un polisaccaride che forma le pareti cellulari delle piante; l'uomo non riesce a digerirla e la assume sotto forma di fibra.</p>
+            <p>I grassi di origine animale sono generalmente <input class="cloze-input" data-answer="saturi" placeholder="…"> e solidi, mentre quelli di origine vegetale sono generalmente <input class="cloze-input" data-answer="insaturi" placeholder="…"> e liquidi.</p>
+        </div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">Le proteine</div>
+            <p>Le proteine sono macromolecole formate dall'unione di <input class="cloze-input" data-answer="amminoacidi" placeholder="…">. In natura ne esistono <input class="cloze-input" data-answer="20" placeholder="…"> tipi diversi.</p>
+            <p>Il <input class="cloze-input" data-answer="collagene" placeholder="…"> è una proteina che dà elasticità alla pelle, mentre le <input class="cloze-input" data-answer="immunoglobuline" placeholder="…"> sono anticorpi che difendono l'organismo dalle malattie.</p>
+        </div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">L'apparato digerente</div>
+            <p>Il tubo digerente è un canale lungo circa <input class="cloze-input" data-answer="7,5" data-alt="8|7.5|7,5-8" placeholder="…" style="width:5em"> metri. Le ghiandole più grandi annesse all'apparato digerente sono le ghiandole salivari, il <input class="cloze-input" data-answer="fegato" placeholder="…"> e il <input class="cloze-input" data-answer="pancreas" placeholder="…">.</p>
+            <p>L'<input class="cloze-input" data-answer="epiglottide" placeholder="…"> è la valvola che chiude la laringe durante la deglutizione, impedendo al cibo di entrare nelle vie respiratorie.</p>
+        </div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">Il viaggio del cibo</div>
+            <p>Nella bocca, l'enzima <input class="cloze-input" data-answer="ptialina" placeholder="…"> scinde l'amido in maltosio. Il cibo masticato e mescolato con la saliva forma il <input class="cloze-input" data-answer="bolo alimentare" data-alt="bolo" placeholder="…" style="width:12em">.</p>
+            <p>La contrazione ritmica dei muscoli lisci che fa avanzare il cibo lungo il tubo digerente si chiama <input class="cloze-input" data-answer="peristalsi" placeholder="…">.</p>
+            <p>Nello stomaco, la <input class="cloze-input" data-answer="pepsina" placeholder="…"> demolisce le proteine in frammenti chiamati <input class="cloze-input" data-answer="peptoni" placeholder="…">. Il risultato della digestione gastrica è un impasto denso chiamato <input class="cloze-input" data-answer="chimo" placeholder="…">.</p>
+            <p>Nell'intestino tenue, la <input class="cloze-input" data-answer="bile" placeholder="…" style="width:5em"> prodotta dal fegato ha la funzione di <input class="cloze-input" data-answer="emulsionare" placeholder="…"> i grassi, riducendoli in goccioline.</p>
+            <p>Il succo pancreatico contiene <input class="cloze-input" data-answer="bicarbonato di sodio" data-alt="bicarbonato" placeholder="…" style="width:14em">, una sostanza basica che neutralizza l'acidità del chimo.</p>
+            <p>Il liquido lattiginoso prodotto dalla digestione nell'intestino tenue si chiama <input class="cloze-input" data-answer="chilo" placeholder="…" style="width:5em">.</p>
+        </div>
+
+        <div class="cloze-block">
+            <div class="cloze-label">Assorbimento e ghiandole</div>
+            <p>L'assorbimento dei nutrienti avviene soprattutto nel <input class="cloze-input" data-answer="digiuno" placeholder="…">, grazie ai <input class="cloze-input" data-answer="villi intestinali" data-alt="villi" placeholder="…" style="width:12em"> e ai microvilli che aumentano la superficie assorbente.</p>
+            <p>Il fegato regola la <input class="cloze-input" data-answer="glicemia" placeholder="…">, cioè la concentrazione di glucosio nel sangue: quando è alta, trasforma il glucosio in <input class="cloze-input" data-answer="glicogeno" placeholder="…">.</p>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="checkCloze()">✓ Verifica</button>
+            <button class="btn btn-outline" onclick="showCloze()">👁 Mostra risposte</button>
+            <button class="btn btn-secondary" onclick="resetCloze()">↺ Ricomincia</button>
+        </div>
+    </div>
+
+    <!-- ======================== VERO O FALSO ======================== -->
+    <div class="quiz-section" id="vof">
+        <h2>Vero o Falso</h2>
+        <p class="section-intro">Attenzione alle trappole! Leggi ogni affermazione con cura.</p>
+        <div class="score-bar" id="vof-score"></div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">1. I micronutrienti comprendono carboidrati, lipidi e proteine.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — quelli sono i <strong>macronutrienti</strong>. I micronutrienti sono vitamine e sali minerali.</div>
+        </div>
+
+        <div class="vof-card" data-correct="vero">
+            <p class="vof-statement">2. La cellulosa è un polisaccaride che l'uomo non riesce a digerire.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Vero — la cellulosa non è digeribile dall'uomo e viene assunta come fibra alimentare.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">3. I grassi insaturi sono generalmente solidi e di origine animale.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — è il contrario: i grassi <strong>saturi</strong> sono solidi e di origine animale. Quelli insaturi sono liquidi e di origine vegetale.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">4. In natura esistono circa 200 amminoacidi diversi che formano le proteine.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — ne esistono solo <strong>20</strong>, non 200. Si combinano però in migliaia di modi diversi.</div>
+        </div>
+
+        <div class="vof-card" data-correct="vero">
+            <p class="vof-statement">5. Le vitamine idrosolubili non si accumulano nell'organismo e vanno assunte regolarmente.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Vero — a differenza delle liposolubili, le idrosolubili non vengono immagazzinate.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">6. Il cardias è la valvola che collega lo stomaco all'intestino tenue.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — il cardias collega l'esofago allo stomaco. La valvola tra stomaco e intestino è il <strong>piloro</strong>.</div>
+        </div>
+
+        <div class="vof-card" data-correct="vero">
+            <p class="vof-statement">7. La pepsina è un enzima che demolisce le proteine in peptoni.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Vero — la pepsina agisce nello stomaco, spezzando le proteine in frammenti chiamati peptoni.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">8. La ptialina è un enzima dello stomaco che scinde le proteine.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — doppio errore! La ptialina agisce nella <strong>bocca</strong> (non nello stomaco) e scinde l'<strong>amido</strong> (non le proteine) in maltosio.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">9. Il chimo è il liquido lattiginoso che si forma nell'intestino tenue.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — il chimo si forma nello <strong>stomaco</strong>. Il liquido lattiginoso dell'intestino tenue si chiama <strong>chilo</strong>. Attenzione: chimo ≠ chilo!</div>
+        </div>
+
+        <div class="vof-card" data-correct="vero">
+            <p class="vof-statement">10. La bile non contiene enzimi digestivi: la sua funzione è emulsionare i grassi.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Vero — la bile emulsiona i grassi riducendoli in goccioline, ma non li digerisce direttamente. Gli enzimi fanno il resto.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">11. L'assorbimento dei nutrienti avviene principalmente nell'intestino crasso.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — l'assorbimento avviene nell'intestino <strong>tenue</strong> (soprattutto nel digiuno). L'intestino crasso assorbe solo acqua, sali minerali e vitamine residue.</div>
+        </div>
+
+        <div class="vof-card" data-correct="vero">
+            <p class="vof-statement">12. Il fegato svolge un'azione detossificante eliminando alcol, farmaci e tossine.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Vero — la detossificazione è una delle molte funzioni del fegato, insieme alla produzione di bile, regolazione della glicemia e sintesi proteica.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">13. Il succo pancreatico è acido e serve a rendere più acido il chimo nell'intestino.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — è il contrario! Il succo pancreatico contiene <strong>bicarbonato di sodio</strong>, una sostanza <strong>basica</strong> che <strong>neutralizza</strong> l'acidità del chimo.</div>
+        </div>
+
+        <div class="vof-card" data-correct="falso">
+            <p class="vof-statement">14. L'intestino tenue è lungo circa 1,5 metri e ha un diametro di 6 cm.</p>
+            <div class="vof-buttons"><button class="vof-btn" data-val="vero">Vero</button><button class="vof-btn" data-val="falso">Falso</button></div>
+            <div class="vof-explanation">Falso — queste sono le misure dell'intestino <strong>crasso</strong>. L'intestino tenue è lungo circa <strong>6 metri</strong> con un diametro di circa 2,5 cm.</div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="resetVoF()">↺ Ricomincia</button>
+        </div>
+    </div>
+
+    <!-- ======================== ABBINA ======================== -->
+    <div class="quiz-section" id="abbina">
+        <h2>Abbina</h2>
+        <p class="section-intro">Associa ogni termine alla definizione o funzione corretta.</p>
+        <div class="score-bar" id="abbina-score"></div>
+
+        <div class="match-block">
+            <div class="match-label">Enzimi e sostanze → dove agiscono</div>
+            <div class="match-row"><span class="match-term">Ptialina</span><select class="match-select" data-answer="bocca"><option value="">Scegli…</option><option value="bocca">Bocca</option><option value="stomaco">Stomaco</option><option value="intestino">Intestino tenue</option><option value="fegato">Fegato</option></select></div>
+            <div class="match-row"><span class="match-term">Pepsina</span><select class="match-select" data-answer="stomaco"><option value="">Scegli…</option><option value="bocca">Bocca</option><option value="stomaco">Stomaco</option><option value="intestino">Intestino tenue</option><option value="fegato">Fegato</option></select></div>
+            <div class="match-row"><span class="match-term">Lattasi</span><select class="match-select" data-answer="intestino"><option value="">Scegli…</option><option value="bocca">Bocca</option><option value="stomaco">Stomaco</option><option value="intestino">Intestino tenue</option><option value="fegato">Fegato</option></select></div>
+            <div class="match-row"><span class="match-term">Bile</span><select class="match-select" data-answer="fegato"><option value="">Scegli…</option><option value="bocca">Bocca</option><option value="stomaco">Stomaco</option><option value="intestino">Intestino tenue</option><option value="fegato">Fegato</option></select></div>
+        </div>
+
+        <div class="match-block">
+            <div class="match-label">Enzima/sostanza → cosa fa</div>
+            <div class="match-row"><span class="match-term">Ptialina</span><select class="match-select" data-answer="amido"><option value="">Scegli…</option><option value="amido">Scinde l'amido in maltosio</option><option value="proteine">Demolisce le proteine</option><option value="grassi">Emulsiona i grassi</option><option value="lattosio">Scinde il lattosio</option><option value="acidità">Neutralizza l'acidità</option></select></div>
+            <div class="match-row"><span class="match-term">Pepsina</span><select class="match-select" data-answer="proteine"><option value="">Scegli…</option><option value="amido">Scinde l'amido in maltosio</option><option value="proteine">Demolisce le proteine</option><option value="grassi">Emulsiona i grassi</option><option value="lattosio">Scinde il lattosio</option><option value="acidità">Neutralizza l'acidità</option></select></div>
+            <div class="match-row"><span class="match-term">Bile</span><select class="match-select" data-answer="grassi"><option value="">Scegli…</option><option value="amido">Scinde l'amido in maltosio</option><option value="proteine">Demolisce le proteine</option><option value="grassi">Emulsiona i grassi</option><option value="lattosio">Scinde il lattosio</option><option value="acidità">Neutralizza l'acidità</option></select></div>
+            <div class="match-row"><span class="match-term">Lattasi</span><select class="match-select" data-answer="lattosio"><option value="">Scegli…</option><option value="amido">Scinde l'amido in maltosio</option><option value="proteine">Demolisce le proteine</option><option value="grassi">Emulsiona i grassi</option><option value="lattosio">Scinde il lattosio</option><option value="acidità">Neutralizza l'acidità</option></select></div>
+            <div class="match-row"><span class="match-term">Bicarbonato di sodio</span><select class="match-select" data-answer="acidità"><option value="">Scegli…</option><option value="amido">Scinde l'amido in maltosio</option><option value="proteine">Demolisce le proteine</option><option value="grassi">Emulsiona i grassi</option><option value="lattosio">Scinde il lattosio</option><option value="acidità">Neutralizza l'acidità</option></select></div>
+        </div>
+
+        <div class="match-block">
+            <div class="match-label">Termine → definizione</div>
+            <div class="match-row"><span class="match-term">Bolo</span><select class="match-select" data-answer="bolo"><option value="">Scegli…</option><option value="bolo">Cibo masticato mescolato con saliva</option><option value="chimo">Impasto denso e acido dallo stomaco</option><option value="chilo">Liquido lattiginoso dall'intestino tenue</option><option value="peristalsi">Contrazioni ritmiche del tubo digerente</option></select></div>
+            <div class="match-row"><span class="match-term">Chimo</span><select class="match-select" data-answer="chimo"><option value="">Scegli…</option><option value="bolo">Cibo masticato mescolato con saliva</option><option value="chimo">Impasto denso e acido dallo stomaco</option><option value="chilo">Liquido lattiginoso dall'intestino tenue</option><option value="peristalsi">Contrazioni ritmiche del tubo digerente</option></select></div>
+            <div class="match-row"><span class="match-term">Chilo</span><select class="match-select" data-answer="chilo"><option value="">Scegli…</option><option value="bolo">Cibo masticato mescolato con saliva</option><option value="chimo">Impasto denso e acido dallo stomaco</option><option value="chilo">Liquido lattiginoso dall'intestino tenue</option><option value="peristalsi">Contrazioni ritmiche del tubo digerente</option></select></div>
+            <div class="match-row"><span class="match-term">Peristalsi</span><select class="match-select" data-answer="peristalsi"><option value="">Scegli…</option><option value="bolo">Cibo masticato mescolato con saliva</option><option value="chimo">Impasto denso e acido dallo stomaco</option><option value="chilo">Liquido lattiginoso dall'intestino tenue</option><option value="peristalsi">Contrazioni ritmiche del tubo digerente</option></select></div>
+        </div>
+
+        <div class="match-block">
+            <div class="match-label">Organo → funzione o caratteristica</div>
+            <div class="match-row"><span class="match-term">Fegato</span><select class="match-select" data-answer="bile_glic"><option value="">Scegli…</option><option value="bile_glic">Produce bile, regola glicemia, detossifica</option><option value="succo_panc">Produce succo con enzimi e bicarbonato</option><option value="assorbimento">Assorbe nutrienti grazie ai villi</option><option value="acqua">Assorbe acqua e forma le feci</option><option value="digestione_acida">Digestione acida con HCl e pepsina</option></select></div>
+            <div class="match-row"><span class="match-term">Pancreas</span><select class="match-select" data-answer="succo_panc"><option value="">Scegli…</option><option value="bile_glic">Produce bile, regola glicemia, detossifica</option><option value="succo_panc">Produce succo con enzimi e bicarbonato</option><option value="assorbimento">Assorbe nutrienti grazie ai villi</option><option value="acqua">Assorbe acqua e forma le feci</option><option value="digestione_acida">Digestione acida con HCl e pepsina</option></select></div>
+            <div class="match-row"><span class="match-term">Intestino tenue</span><select class="match-select" data-answer="assorbimento"><option value="">Scegli…</option><option value="bile_glic">Produce bile, regola glicemia, detossifica</option><option value="succo_panc">Produce succo con enzimi e bicarbonato</option><option value="assorbimento">Assorbe nutrienti grazie ai villi</option><option value="acqua">Assorbe acqua e forma le feci</option><option value="digestione_acida">Digestione acida con HCl e pepsina</option></select></div>
+            <div class="match-row"><span class="match-term">Intestino crasso</span><select class="match-select" data-answer="acqua"><option value="">Scegli…</option><option value="bile_glic">Produce bile, regola glicemia, detossifica</option><option value="succo_panc">Produce succo con enzimi e bicarbonato</option><option value="assorbimento">Assorbe nutrienti grazie ai villi</option><option value="acqua">Assorbe acqua e forma le feci</option><option value="digestione_acida">Digestione acida con HCl e pepsina</option></select></div>
+            <div class="match-row"><span class="match-term">Stomaco</span><select class="match-select" data-answer="digestione_acida"><option value="">Scegli…</option><option value="bile_glic">Produce bile, regola glicemia, detossifica</option><option value="succo_panc">Produce succo con enzimi e bicarbonato</option><option value="assorbimento">Assorbe nutrienti grazie ai villi</option><option value="acqua">Assorbe acqua e forma le feci</option><option value="digestione_acida">Digestione acida con HCl e pepsina</option></select></div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="checkMatch()">✓ Verifica</button>
+            <button class="btn btn-secondary" onclick="resetMatch()">↺ Ricomincia</button>
+        </div>
+    </div>
+
+    <footer>Quiz di studio · Unità 3: Gli alimenti e la loro digestione</footer>
+
+</div>
+
+<script>
+    /* ======== UTILITY ======== */
+    function normalize(s) {
+        return s.toLowerCase().trim()
+            .replace(/['''`]/g, "'")
+            .replace(/[^\w\sàèéìòùç',]/g, '')
+            .replace(/\s+/g, ' ');
+    }
+
+    /* ======== TAB NAVIGATION ======== */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.quiz-section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    /* ======== TESTI BUCATI ======== */
+    function checkCloze() {
+        const inputs = document.querySelectorAll('#bucati .cloze-input');
+        let correct = 0;
+        inputs.forEach(inp => {
+            const userVal = normalize(inp.value);
+            const mainAnswer = normalize(inp.dataset.answer);
+            const alts = inp.dataset.alt ? inp.dataset.alt.split('|').map(normalize) : [];
+            const allAnswers = [mainAnswer, ...alts];
+            inp.classList.remove('correct', 'wrong', 'revealed');
+            if (allAnswers.some(a => userVal === a)) {
+                inp.classList.add('correct');
+                correct++;
+            } else if (userVal === '') {
+                inp.classList.add('wrong');
+            } else {
+                inp.classList.add('wrong');
+            }
+        });
+        const bar = document.getElementById('bucati-score');
+        bar.textContent = `Punteggio: ${correct} / ${inputs.length}`;
+        bar.classList.add('visible');
+    }
+
+    function showCloze() {
+        document.querySelectorAll('#bucati .cloze-input').forEach(inp => {
+            inp.value = inp.dataset.answer;
+            inp.classList.remove('correct', 'wrong');
+            inp.classList.add('revealed');
+        });
+        document.getElementById('bucati-score').classList.remove('visible');
+    }
+
+    function resetCloze() {
+        document.querySelectorAll('#bucati .cloze-input').forEach(inp => {
+            inp.value = '';
+            inp.classList.remove('correct', 'wrong', 'revealed');
+        });
+        document.getElementById('bucati-score').classList.remove('visible');
+    }
+
+    /* ======== VERO O FALSO ======== */
+    let vofAnswered = 0;
+    const vofTotal = document.querySelectorAll('.vof-card').length;
+
+    document.querySelectorAll('.vof-card').forEach(card => {
+        const correctVal = card.dataset.correct;
+        const buttons = card.querySelectorAll('.vof-btn');
+        const explanation = card.querySelector('.vof-explanation');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (card.classList.contains('answered')) return;
+                card.classList.add('answered');
+                vofAnswered++;
+                const chosen = btn.dataset.val;
+                const isCorrect = chosen === correctVal;
+
+                buttons.forEach(b => {
+                    if (b.dataset.val === chosen) {
+                        b.classList.add(isCorrect ? 'selected-correct' : 'selected-wrong');
+                    }
+                    if (!isCorrect && b.dataset.val === correctVal) {
+                        b.classList.add('highlight-correct');
+                    }
+                    if (b.dataset.val !== chosen && b.dataset.val !== correctVal) {
+                        b.classList.add('disabled');
+                    }
+                });
+                explanation.classList.add('visible');
+
+                /* Update score */
+                const answeredCorrect = document.querySelectorAll('.vof-btn.selected-correct').length;
+                const bar = document.getElementById('vof-score');
+                bar.textContent = `Risposte: ${vofAnswered} / ${vofTotal} · Corrette: ${answeredCorrect}`;
+                bar.classList.add('visible');
+            });
+        });
+    });
+
+    function resetVoF() {
+        vofAnswered = 0;
+        document.querySelectorAll('.vof-card').forEach(card => {
+            card.classList.remove('answered');
+            card.querySelectorAll('.vof-btn').forEach(b => {
+                b.classList.remove('selected-correct', 'selected-wrong', 'disabled', 'highlight-correct');
+            });
+            card.querySelector('.vof-explanation').classList.remove('visible');
+        });
+        document.getElementById('vof-score').classList.remove('visible');
+    }
+
+    /* ======== ABBINA ======== */
+    function checkMatch() {
+        const selects = document.querySelectorAll('#abbina .match-select');
+        let correct = 0;
+        selects.forEach(sel => {
+            sel.classList.remove('correct', 'wrong');
+            if (sel.value === sel.dataset.answer) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value === '') {
+                sel.classList.add('wrong');
+            } else {
+                sel.classList.add('wrong');
+            }
+        });
+        const bar = document.getElementById('abbina-score');
+        bar.textContent = `Punteggio: ${correct} / ${selects.length}`;
+        bar.classList.add('visible');
+    }
+
+    function resetMatch() {
+        document.querySelectorAll('#abbina .match-select').forEach(sel => {
+            sel.value = '';
+            sel.classList.remove('correct', 'wrong');
+        });
+        document.getElementById('abbina-score').classList.remove('visible');
+    }
+</script>
+</body>
+</html>

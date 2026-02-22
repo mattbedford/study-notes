@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gli alimenti e la loro digestione — Appunti di Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f4;
+            --text: #2c2418;
+            --text-light: #6b5d4d;
+            --accent: #0d7377;
+            --accent-light: #4ba8ab;
+            --border: #d4c5b0;
+            --highlight: #e1f1f0;
+            --section-bg: #edf5f4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 17px; scroll-behavior: smooth; }
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .page { max-width: 780px; margin: 0 auto; padding: 3rem 4rem; }
+        @media (max-width: 900px) { .page { padding: 2rem 1.5rem; } }
+
+        /* HEADER */
+        header { text-align: center; padding: 3rem 0 2rem; border-bottom: 2px solid var(--accent); margin-bottom: 3rem; }
+        header .unit-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+        header .subtitle { font-style: italic; color: var(--text-light); font-size: 1.05rem; }
+        header .period { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-top: 0.8rem; }
+
+        /* SECTIONS */
+        section { margin-bottom: 3rem; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-top: 1.8rem; margin-bottom: 0.6rem; }
+        h4 { font-family: 'Source Serif 4', serif; font-size: 1rem; font-weight: 600; color: var(--accent); margin-top: 1.2rem; margin-bottom: 0.4rem; }
+        p { margin-bottom: 0.8rem; }
+        strong { color: var(--text); }
+        ul { margin: 0.5rem 0 1rem 1.2rem; list-style: none; }
+        ul li { position: relative; padding-left: 1rem; margin-bottom: 0.4rem; }
+        ul li::before { content: '–'; position: absolute; left: 0; color: var(--accent); font-weight: 600; }
+
+        /* FIGURES & IMAGES */
+        .fig {
+            margin: 1.2rem 0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--section-bg);
+            border: 1px solid var(--border);
+        }
+        .fig img, .fig svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .fig figcaption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-light);
+            letter-spacing: 0.03em;
+            padding: 0.6rem 0.8rem;
+            line-height: 1.5;
+            border-top: 1px solid var(--border);
+            background: var(--section-bg);
+        }
+        .fig-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+        .fig-row .fig { margin: 0; }
+        @media (max-width: 600px) { .fig-row { grid-template-columns: 1fr; } }
+        .fig.tall img { max-height: 500px; object-fit: contain; background: var(--bg); }
+        .fig.wide img { max-height: 350px; object-fit: contain; background: var(--bg); }
+        .fig.diagram { padding: 1rem; background: var(--bg); }
+        .fig.diagram svg { max-height: 380px; }
+        .fig.diagram figcaption { background: var(--bg); }
+
+        /* OPERA BLOCK — used here for organ descriptions */
+        .opera-block { background: var(--section-bg); border-left: 4px solid var(--accent); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; }
+        .opera-block h3 { margin-top: 0; font-size: 1.15rem; }
+        .opera-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.8rem; letter-spacing: 0.03em; }
+        .opera-block .fig { background: var(--bg); }
+        .opera-block .fig figcaption { background: var(--bg); }
+
+        /* GLOSSARY */
+        .glossary { columns: 2; column-gap: 2rem; margin-top: 1rem; }
+        @media (max-width: 600px) { .glossary { columns: 1; } }
+        .glossary-item { break-inside: avoid; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        .glossary-term { font-weight: 600; color: var(--accent); font-size: 0.95rem; }
+        .glossary-def { font-size: 0.88rem; color: var(--text-light); margin-top: 0.15rem; }
+
+        /* KEY POINT */
+        .key-point { background: var(--highlight); border-radius: 6px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.95rem; }
+        .key-point::before { content: '💡'; margin-right: 0.3rem; }
+
+        /* PROCESS STEP — for the journey section */
+        .process-step { position: relative; padding-left: 2.5rem; margin-bottom: 1.5rem; }
+        .process-step::before {
+            content: attr(data-step);
+            position: absolute; left: 0; top: 0.1rem;
+            width: 1.8rem; height: 1.8rem;
+            background: var(--accent); color: #fff;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+        }
+        .process-step h4 { margin-top: 0; font-size: 1.05rem; color: var(--accent); }
+        .process-step .enzyme-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+            letter-spacing: 0.03em;
+        }
+        .process-step .transform {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin: 0.4rem 0;
+        }
+        .process-connector {
+            width: 2px; height: 1.2rem;
+            background: var(--accent-light);
+            margin: 0 0 0 0.85rem;
+            opacity: 0.5;
+        }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 2rem; font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+
+        /* PRINT */
+        @media print {
+            html { font-size: 11pt; }
+            .page { padding: 0; max-width: 100%; }
+            .fig { break-inside: avoid; }
+            section { page-break-inside: avoid; }
+            .opera-block { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header>
+        <div class="unit-label">Unità 3 · Scienze — Corpo umano e genetica</div>
+        <h1>Gli alimenti e la loro digestione</h1>
+        <div class="subtitle">Appunti di studio — l'essenziale</div>
+        <div class="period">I principi nutritivi · L'apparato digerente · La digestione</div>
+    </header>
+
+    <!-- ======================== SECTION 1 ======================== -->
+    <section>
+        <h2>1. I principi nutritivi</h2>
+
+        <p>Il nostro corpo ricava dagli alimenti sostanze chiamate <strong>nutrienti</strong> (o <strong>principi nutritivi</strong>), classificate in due grandi categorie: <strong>macronutrienti</strong> e <strong>micronutrienti</strong>.</p>
+
+        <div class="key-point">I <strong>macronutrienti</strong> (carboidrati, lipidi, proteine) servono in quantità sostanziose. I <strong>micronutrienti</strong> (vitamine, sali minerali) servono in quantità modeste ma sono indispensabili. A questi si aggiunge l'<strong>acqua</strong>, presente dentro e fuori le cellule.</div>
+
+        <h3>Polimeri e monomeri</h3>
+        <p>Dal punto di vista chimico, gran parte dei nutrienti sono <strong>macromolecole</strong>: grosse molecole chiamate <strong>polimeri</strong>, formate da tanti <strong>monomeri</strong> (piccole molecole unite da legami covalenti, come «mattoncini»). La digestione serve proprio a <strong>smontare</strong> i polimeri in monomeri per permetterne l'assorbimento.</p>
+
+        <h3>I carboidrati</h3>
+        <p>Principale fonte di energia. I più importanti polisaccaridi sono:</p>
+        <ul>
+            <li><strong>Amido</strong> — riserva energetica nelle piante (cereali, tuberi). Facilmente digeribile dall'uomo.</li>
+            <li><strong>Glicogeno</strong> — riserva energetica negli animali, immagazzinato nei muscoli e nel fegato.</li>
+            <li><strong>Cellulosa</strong> — polisaccaride lineare delle pareti cellulari vegetali. Non digeribile dall'uomo, ma presente negli alimenti come <strong>fibra</strong>.</li>
+            <li><strong>Chitina</strong> — polisaccaride contenente azoto. Forma l'esoscheletro degli artropodi (insetti, ragni, crostacei) e le pareti cellulari dei funghi.</li>
+        </ul>
+
+        <h3>I lipidi</h3>
+        <p>Comprendono <strong>trigliceridi</strong>, <strong>fosfolipidi</strong>, <strong>steroli</strong> (colesterolo) e <strong>cere</strong>. Non si sciolgono in acqua. Funzioni: riserva energetica, isolamento termico, ormoni, membrane cellulari (fosfolipidi).</p>
+
+        <h4>Grassi saturi e insaturi</h4>
+        <ul>
+            <li><strong>Grassi saturi</strong> — solo legami covalenti semplici → code ordinate → generalmente <strong>solidi</strong> (origine animale: burro, strutto).</li>
+            <li><strong>Grassi insaturi</strong> — almeno un doppio legame → code disordinate → generalmente <strong>liquidi</strong> (origine vegetale: olio d'oliva). Da preferire nella dieta.</li>
+        </ul>
+
+        <h3>Le proteine</h3>
+        <p>Macromolecole formate da <strong>amminoacidi</strong> (20 tipi diversi, migliaia di combinazioni). Funzioni principali:</p>
+        <ul>
+            <li><strong>Funzione plastica</strong> — costruiscono i tessuti: <strong>collagene</strong> (pelle, tendini), <strong>cheratina</strong> (capelli, unghie), <strong>elastina</strong>.</li>
+            <li><strong>Enzimi</strong> — accelerano le reazioni chimiche nel corpo.</li>
+            <li><strong>Actina e miosina</strong> — consentono il movimento muscolare.</li>
+            <li><strong>Ormoni</strong> — messaggeri chimici (alcuni tipi sono proteine).</li>
+            <li><strong>Immunoglobuline</strong> (anticorpi) — difesa dalle malattie.</li>
+        </ul>
+
+        <h3>Le vitamine</h3>
+        <p>Sostanze organiche regolatrici, necessarie in piccolissime quantità (pochi mg/giorno). Si dividono in:</p>
+        <ul>
+            <li><strong>Idrosolubili</strong> — solubili in acqua (frutta, verdura). Non si accumulano → vanno assunte regolarmente.</li>
+            <li><strong>Liposolubili</strong> — solubili nei grassi (latticini, oli). Si accumulano nel fegato. Es. la <strong>vitamina D</strong> viene attivata dall'esposizione ai raggi solari.</li>
+        </ul>
+
+        <h3>I sali minerali</h3>
+        <p>Sostanze <strong>inorganiche</strong> con funzione regolatrice e plastica. Esempi: il <strong>calcio</strong> serve per la contrazione muscolare e per la costruzione delle ossa; il <strong>ferro</strong> è presente nell'emoglobina, la proteina che trasporta l'ossigeno nel sangue. Altri minerali importanti: potassio, sodio, magnesio.</p>
+    </section>
+
+    <!-- ======================== SECTION 2 ======================== -->
+    <section>
+        <h2>2. L'apparato digerente — gli organi</h2>
+
+        <div class="key-point">L'<strong>apparato digerente</strong> ha il compito di ingerire, trasformare e assorbire il cibo attraverso la <strong>digestione</strong>: le sostanze complesse vengono trasformate in sostanze più semplici, adatte a essere assorbite dal corpo.</div>
+
+        <p>È formato da due componenti: il <strong>tubo digerente</strong> (un canale lungo 7,5–8 m) e le <strong>ghiandole</strong> che secernono le sostanze necessarie alla trasformazione del cibo.</p>
+
+        <figure class="fig diagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 340" font-family="'Source Serif 4', Georgia, serif">
+                <defs>
+                    <style>
+                        .sv-organ { fill: #0d7377; rx: 8; ry: 8; }
+                        .sv-gland { fill: #4ba8ab; rx: 8; ry: 8; }
+                        .sv-text { font-size: 14px; fill: #fff; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+                        .sv-text-sm { font-size: 11px; fill: #fff; font-weight: 400; text-anchor: middle; dominant-baseline: central; }
+                        .sv-arrow { stroke: #0d7377; stroke-width: 2; fill: none; marker-end: url(#sv-ah); }
+                        .sv-label { font-size: 11px; fill: #6b5d4d; font-family: 'JetBrains Mono', monospace; text-anchor: middle; }
+                        .sv-valve { fill: #fff; stroke: #0d7377; stroke-width: 1.5; }
+                        .sv-valve-text { font-size: 9.5px; fill: #0d7377; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-anchor: middle; dominant-baseline: central; letter-spacing: 0.04em; }
+                    </style>
+                    <marker id="sv-ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#0d7377"/>
+                    </marker>
+                </defs>
+
+                <!-- TITLE -->
+                <text x="330" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="#2c2418" font-family="'Playfair Display', serif">Il tubo digerente</text>
+
+                <!-- ROW 1: Bocca → Faringe → [epiglottide] → Esofago → [cardias] → Stomaco -->
+                <rect x="10" y="46" width="80" height="44" class="sv-organ"/>
+                <text x="50" y="68" class="sv-text">Bocca</text>
+
+                <line x1="90" y1="68" x2="108" y2="68" class="sv-arrow"/>
+
+                <rect x="110" y="46" width="80" height="44" class="sv-organ"/>
+                <text x="150" y="68" class="sv-text">Faringe</text>
+
+                <line x1="190" y1="68" x2="204" y2="68" stroke="#0d7377" stroke-width="2"/>
+                <rect x="206" y="56" width="76" height="24" rx="12" ry="12" class="sv-valve"/>
+                <text x="244" y="68" class="sv-valve-text">epiglottide</text>
+                <line x1="284" y1="68" x2="298" y2="68" class="sv-arrow"/>
+
+                <rect x="300" y="46" width="84" height="44" class="sv-organ"/>
+                <text x="342" y="68" class="sv-text">Esofago</text>
+
+                <line x1="384" y1="68" x2="398" y2="68" stroke="#0d7377" stroke-width="2"/>
+                <rect x="400" y="56" width="60" height="24" rx="12" ry="12" class="sv-valve"/>
+                <text x="430" y="68" class="sv-valve-text">cardias</text>
+                <line x1="462" y1="68" x2="476" y2="68" class="sv-arrow"/>
+
+                <rect x="478" y="46" width="90" height="44" class="sv-organ"/>
+                <text x="523" y="68" class="sv-text">Stomaco</text>
+
+                <!-- Drop-down arrow from Stomaco to Row 2 -->
+                <line x1="523" y1="90" x2="523" y2="104" stroke="#0d7377" stroke-width="2"/>
+                <line x1="523" y1="104" x2="50" y2="104" stroke="#0d7377" stroke-width="2" stroke-dasharray="4,3"/>
+                <line x1="50" y1="104" x2="50" y2="118" class="sv-arrow"/>
+
+                <!-- ROW 2: [piloro] → Int. tenue → Int. crasso → Ano -->
+                <rect x="22" y="120" width="54" height="24" rx="12" ry="12" class="sv-valve"/>
+                <text x="49" y="132" class="sv-valve-text">piloro</text>
+
+                <line x1="78" y1="132" x2="96" y2="132" class="sv-arrow"/>
+
+                <rect x="98" y="114" width="140" height="40" class="sv-organ"/>
+                <text x="168" y="128" class="sv-text">Intestino tenue</text>
+                <text x="168" y="143" class="sv-text-sm">duodeno · digiuno · ileo</text>
+
+                <line x1="238" y1="132" x2="264" y2="132" class="sv-arrow"/>
+
+                <rect x="266" y="114" width="140" height="40" class="sv-organ"/>
+                <text x="336" y="128" class="sv-text">Intestino crasso</text>
+                <text x="336" y="143" class="sv-text-sm">cieco · colon · retto</text>
+
+                <line x1="406" y1="132" x2="424" y2="132" class="sv-arrow"/>
+
+                <rect x="426" y="116" width="58" height="36" class="sv-organ"/>
+                <text x="455" y="134" class="sv-text">Ano</text>
+
+                <!-- GLANDS SECTION -->
+                <text x="330" y="194" text-anchor="middle" font-size="16" font-weight="700" fill="#2c2418" font-family="'Playfair Display', serif">Le ghiandole</text>
+
+                <rect x="16" y="214" width="110" height="44" class="sv-gland"/>
+                <text x="71" y="229" class="sv-text">Ghiandole</text>
+                <text x="71" y="245" class="sv-text-sm">salivari</text>
+                <text x="71" y="276" class="sv-label">→ bocca</text>
+
+                <rect x="148" y="214" width="90" height="44" class="sv-gland"/>
+                <text x="193" y="236" class="sv-text">Fegato</text>
+                <text x="193" y="276" class="sv-label">→ duodeno</text>
+                <text x="193" y="290" class="sv-label">(bile)</text>
+
+                <rect x="260" y="214" width="100" height="44" class="sv-gland"/>
+                <text x="310" y="236" class="sv-text">Pancreas</text>
+                <text x="310" y="276" class="sv-label">→ duodeno</text>
+
+                <rect x="382" y="214" width="110" height="44" class="sv-gland"/>
+                <text x="437" y="229" class="sv-text">Ghiandole</text>
+                <text x="437" y="245" class="sv-text-sm">gastriche</text>
+                <text x="437" y="276" class="sv-label">→ stomaco</text>
+
+                <rect x="514" y="214" width="110" height="44" class="sv-gland"/>
+                <text x="569" y="229" class="sv-text-sm">Ghiandole</text>
+                <text x="569" y="245" class="sv-text-sm">intestinali</text>
+                <text x="569" y="276" class="sv-label">→ intestino</text>
+            </svg>
+            <figcaption>Schema dell'apparato digerente: il tubo digerente (organi in sequenza su due righe) con le tre valvole (capsule bianche) tra gli organi. In basso, le ghiandole annesse e dove riversano i loro secreti.</figcaption>
+        </figure>
+
+        <!-- BOCCA -->
+        <div class="opera-block">
+            <h3>La bocca</h3>
+            <div class="opera-meta">Inizio del tubo digerente</div>
+            <p>Delimitata da labbra, guance, palato e pavimento. Contiene la <strong>lingua</strong> (muscolo volontario con le <strong>papille gustative</strong>), le <strong>ghiandole salivari</strong> (parotide, sottolinguale, sottomandibolare) e due <strong>arcate dentali</strong>.</p>
+            <p>I <strong>denti</strong> hanno funzioni diverse: <strong>incisivi</strong> (tagliano), <strong>canini</strong> (strappano), <strong>premolari</strong> e <strong>molari</strong> (schiacciano e triturano). Dentatura permanente: 32 denti, 16 per arcata.</p>
+        </div>
+
+        <!-- FARINGE + ESOFAGO -->
+        <div class="opera-block">
+            <h3>Faringe ed esofago</h3>
+            <div class="opera-meta">Dalla bocca allo stomaco</div>
+            <p>La <strong>faringe</strong> è un breve condotto per il passaggio sia dell'aria sia del cibo. Durante la deglutizione, l'<strong>epiglottide</strong> chiude la laringe per impedire al cibo di entrare nelle vie respiratorie.</p>
+            <p>L'<strong>esofago</strong> è un canale lungo circa 20 cm con muscoli lisci che, contraendosi ritmicamente (<strong>peristalsi</strong>), fanno avanzare il cibo. Comunica con lo stomaco tramite la valvola <strong>cardias</strong>.</p>
+        </div>
+
+        <!-- STOMACO -->
+        <div class="opera-block">
+            <h3>Lo stomaco</h3>
+            <div class="opera-meta">Sacco muscolare · Valvole: cardias (ingresso) — piloro (uscita)</div>
+            <p>Sacca di muscolatura liscia rivestita internamente dalla <strong>mucosa gastrica</strong>, ricca di ghiandole che producono il <strong>succo gastrico</strong>. Le pareti producono <strong>muco</strong> protettivo contro l'azione corrosiva dell'acido cloridrico. Lo stomaco comunica con l'intestino attraverso il <strong>piloro</strong>.</p>
+            <p>Lo stomaco ha anche una limitata funzione di <strong>assorbimento</strong>: molecole piccole come acqua, glucosio e alcol passano direttamente nel sangue.</p>
+        </div>
+
+        <!-- INTESTINO TENUE -->
+        <div class="opera-block">
+            <h3>L'intestino tenue</h3>
+            <div class="opera-meta">Lungo circa 6 m · Ø medio 2,5 cm · Tre parti: duodeno, digiuno, ileo</div>
+            <p>È il tratto dove si completa la digestione e avviene la maggior parte dell'<strong>assorbimento</strong>. Nel <strong>duodeno</strong> arrivano la bile (dal fegato), il succo pancreatico (dal pancreas) e il succo enterico (dalle ghiandole intestinali).</p>
+            <p>L'assorbimento avviene soprattutto nel <strong>digiuno</strong>, grazie ai <strong>villi intestinali</strong> — espansioni della parete che aumentano enormemente la superficie assorbente. I villi sono a loro volta dotati di <strong>microvilli</strong>.</p>
+        </div>
+
+        <!-- INTESTINO CRASSO -->
+        <div class="opera-block">
+            <h3>L'intestino crasso</h3>
+            <div class="opera-meta">Lungo circa 1,5 m · Ø medio 6 cm · Cieco, colon, retto</div>
+            <p>Formato da: <strong>cieco</strong> (con l'<strong>appendice</strong>), <strong>colon</strong> (ascendente, trasverso, discendente) e <strong>retto</strong> che termina con l'<strong>ano</strong>.</p>
+            <p>Non avviene digestione. Il crasso assorbe <strong>acqua</strong>, <strong>sali minerali</strong> e <strong>vitamine</strong> residue. Le sostanze non assorbite formano le <strong>feci</strong>, eliminate con la <strong>defecazione</strong>.</p>
+            <p>L'intero intestino è avvolto dal <strong>peritoneo</strong>, una membrana protettiva.</p>
+        </div>
+
+        <!-- FEGATO -->
+        <div class="opera-block">
+            <h3>Il fegato</h3>
+            <div class="opera-meta">La ghiandola più grande del corpo · circa 1,5 kg · Parte superiore destra dell'addome</div>
+            <p>Produce la <strong>bile</strong> (0,5–1 litro/giorno), immagazzinata nella <strong>cistifellea</strong> e riversata nel duodeno tramite il <strong>coledoco</strong>. La bile <strong>emulsiona i grassi</strong>, riducendoli in goccioline attaccabili dagli enzimi.</p>
+            <p>Altre funzioni fondamentali:</p>
+            <ul>
+                <li><strong>Detossificazione</strong> — elimina alcol, farmaci e tossine; distrugge i globuli rossi vecchi.</li>
+                <li><strong>Regolazione della glicemia</strong> — glicemia alta → glucosio trasformato in glicogeno (riserva); glicemia bassa → glicogeno riconvertito in glucosio.</li>
+                <li><strong>Sintesi proteica</strong> — produce proteine del plasma, tra cui il fibrinogeno (coagulazione del sangue).</li>
+                <li><strong>Deposito</strong> di vitamine A, D e ferro.</li>
+            </ul>
+        </div>
+
+        <!-- PANCREAS -->
+        <div class="opera-block">
+            <h3>Il pancreas</h3>
+            <div class="opera-meta">Ghiandola situata dietro lo stomaco</div>
+            <p>La sua parte esocrina produce il <strong>succo pancreatico</strong>, che si riversa nel duodeno. Contiene numerosi <strong>enzimi digestivi</strong> e <strong>bicarbonato di sodio</strong>, una sostanza basica che <strong>neutralizza l'acidità del chimo</strong>, favorendo l'azione degli enzimi intestinali.</p>
+        </div>
+    </section>
+
+    <!-- ======================== SECTION 3 ======================== -->
+    <section>
+        <h2>3. Il viaggio del cibo — dalla bocca alle feci</h2>
+
+        <p>Seguiamo il percorso di un boccone di cibo attraverso l'apparato digerente, passo dopo passo.</p>
+
+        <div class="process-step" data-step="1">
+            <h4>Bocca — masticazione e insalivazione</h4>
+            <p>I denti triturano il cibo; la <strong>saliva</strong> lo lubrifica e inizia la digestione chimica.</p>
+            <span class="enzyme-tag">PTIALINA</span> <span class="enzyme-tag">LISOZIMA</span>
+            <div class="transform">amido (polisaccaride) → maltosio (disaccaride)</div>
+            <p>Il lisozima ha proprietà battericide. Il cibo masticato e mescolato con la saliva forma il <strong>bolo alimentare</strong>.</p>
+        </div>
+
+        <div class="process-connector"></div>
+
+        <div class="process-step" data-step="2">
+            <h4>Deglutizione — faringe ed esofago</h4>
+            <p>Il bolo attraversa la <strong>faringe</strong> (l'epiglottide chiude la laringe) e percorre l'<strong>esofago</strong> grazie alla <strong>peristalsi</strong> — contrazioni ritmiche dei muscoli lisci. La valvola <strong>cardias</strong> si apre per farlo entrare nello stomaco.</p>
+        </div>
+        <div class="process-connector"></div>
+        <figure class="fig">
+            <img src="img/swallow.jpg" alt="Il processo di deglutazione">
+            <figcaption>Il processo di deglutazione umana.</figcaption>
+        </figure>
+
+        <div class="process-step" data-step="3">
+            <h4>Stomaco — il succo gastrico</h4>
+            <p>Il <strong>succo gastrico</strong> (acido cloridrico + enzimi) attacca il bolo. L'HCl rende acido l'ambiente e uccide i microbi.</p>
+            <span class="enzyme-tag">PEPSINA</span>
+            <div class="transform">proteine → peptoni → amminoacidi</div>
+            <p>Le pareti producono <strong>muco</strong> per proteggersi dall'acido. Il risultato è un impasto denso e acido chiamato <strong>chimo</strong>, che attraversa il <strong>piloro</strong> verso l'intestino tenue.</p>
+        </div>
+        <div class="process-connector"></div>
+        <figure class="fig">
+            <img src="img/stomach.jpg" alt="Lo stomaco in sezione">
+            <figcaption>Lo stomaco in sezione</figcaption>
+        </figure>
+
+        <div class="process-step" data-step="4">
+            <h4>Intestino tenue — tre succhi, digestione completa</h4>
+            <p>Nel duodeno il chimo incontra tre succhi digestivi:</p>
+            <span class="enzyme-tag">BILE</span> <span class="enzyme-tag">SUCCO PANCREATICO</span> <span class="enzyme-tag">SUCCO ENTERICO</span>
+            <ul>
+                <li><strong>Bile</strong> (dal fegato) — <strong>emulsiona i grassi</strong> in goccioline più piccole.</li>
+                <li><strong>Succo pancreatico</strong> (dal pancreas) — enzimi digestivi + <strong>bicarbonato di sodio</strong> che neutralizza l'acidità del chimo.</li>
+                <li><strong>Succo enterico</strong> (ghiandole intestinali) — contiene la <strong>lattasi</strong>, che scinde il lattosio in glucosio e galattosio.</li>
+            </ul>
+            <div class="transform">Il cibo diventa un liquido lattiginoso: il <strong>chilo</strong>.</div>
+        </div>
+        <div class="process-connector"></div>
+        <figure class="fig">
+            <img src="img/stomach-2.jpg" alt="Lo stomaco durante la digestione del cibo">
+            <figcaption>Lo stomaco durante la digestione del cibo</figcaption>
+        </figure>
+        <figure class="fig">
+            <img src="img/fegato.jpg" alt="fegato">
+            <figcaption>Lo stomaco durante la digestione del cibo</figcaption>
+        </figure>
+
+        <div class="process-step" data-step="5">
+            <h4>Assorbimento — villi e microvilli</h4>
+            <p>I nutrienti ormai scomposti (amminoacidi, acidi grassi, zuccheri semplici) attraversano la parete dell'intestino tenue — soprattutto nel <strong>digiuno</strong> — ed entrano nel <strong>circolo sanguigno</strong>.</p>
+            <p>La superficie è enormemente ampliata dai <strong>villi intestinali</strong> e dai <strong>microvilli</strong>.</p>
+        </div>
+        <div class="process-connector"></div>
+        <figure class="fig">
+            <img src="img/intestines.jpg" alt="Com'è fatto l'intestino">
+            <figcaption>Com'è fatto l'intestino</figcaption>
+        </figure>
+
+        <div class="process-step" data-step="6">
+            <h4>Intestino crasso — acqua e scarti</h4>
+            <p>Nessuna digestione. Il crasso assorbe <strong>acqua</strong>, <strong>sali minerali</strong> e <strong>vitamine</strong> residue. Ciò che resta diventa <strong>feci</strong>.</p>
+        </div>
+        <div class="process-connector"></div>
+
+        <div class="process-step" data-step="7">
+            <h4>Defecazione</h4>
+            <p>Le feci vengono eliminate attraverso il <strong>retto</strong> e l'<strong>ano</strong>.</p>
+        </div>
+        <figure class="fig">
+            <img src="img/squirrel.jpg" alt="A happy squirrel">
+            <figcaption>It seemed a bit gross to add a picture of defecazione and the ano, so here's a happy picture of a squirrel instead.</figcaption>
+        </figure>
+
+        <div class="key-point">Da ricordare le trasformazioni chimiche: <strong>bolo</strong> (bocca) → <strong>chimo</strong> (stomaco) → <strong>chilo</strong> (intestino tenue) → <strong>assorbimento</strong> → <strong>feci</strong> (crasso).</div>
+    </section>
+
+    <!-- ======================== GLOSSARY ======================== -->
+    <section>
+        <h2>4. Glossario</h2>
+        <div class="glossary">
+            <div class="glossary-item"><div class="glossary-term">acido cloridrico (HCl)</div><div class="glossary-def">Componente del succo gastrico; rende acido lo stomaco e uccide i microbi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">amido</div><div class="glossary-def">Polisaccaride di riserva energetica nelle piante (cereali, tuberi).</div></div>
+            <div class="glossary-item"><div class="glossary-term">amminoacidi</div><div class="glossary-def">Monomeri delle proteine; ne esistono 20 tipi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">apparato digerente</div><div class="glossary-def">Insieme di organi (tubo digerente + ghiandole) che trasformano il cibo in sostanze assorbibili.</div></div>
+            <div class="glossary-item"><div class="glossary-term">assorbimento</div><div class="glossary-def">Passaggio dei nutrienti digeriti dalla parete intestinale al sangue.</div></div>
+            <div class="glossary-item"><div class="glossary-term">bile</div><div class="glossary-def">Liquido prodotto dal fegato che emulsiona i grassi; immagazzinata nella cistifellea.</div></div>
+            <div class="glossary-item"><div class="glossary-term">bolo alimentare</div><div class="glossary-def">Cibo masticato e mescolato con la saliva, pronto per la deglutizione.</div></div>
+            <div class="glossary-item"><div class="glossary-term">carboidrati</div><div class="glossary-def">Macronutrienti; principale fonte di energia. Comprendono zuccheri semplici e polisaccaridi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">cardias</div><div class="glossary-def">Valvola tra esofago e stomaco.</div></div>
+            <div class="glossary-item"><div class="glossary-term">cellulosa</div><div class="glossary-def">Polisaccaride delle pareti cellulari vegetali; non digeribile dall'uomo (fibra).</div></div>
+            <div class="glossary-item"><div class="glossary-term">chilo</div><div class="glossary-def">Liquido lattiginoso risultante dalla digestione nell'intestino tenue.</div></div>
+            <div class="glossary-item"><div class="glossary-term">chimo</div><div class="glossary-def">Impasto denso e acido che si forma nello stomaco dopo l'azione del succo gastrico.</div></div>
+            <div class="glossary-item"><div class="glossary-term">chitina</div><div class="glossary-def">Polisaccaride con azoto; forma l'esoscheletro degli artropodi e le pareti dei funghi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">cistifellea</div><div class="glossary-def">Piccolo serbatoio dove viene immagazzinata la bile prima di essere riversata nel duodeno.</div></div>
+            <div class="glossary-item"><div class="glossary-term">coledoco</div><div class="glossary-def">Condotto che porta la bile dalla cistifellea al duodeno.</div></div>
+            <div class="glossary-item"><div class="glossary-term">colesterolo</div><div class="glossary-def">Sterolo presente nel sangue; in eccesso aumenta il rischio cardiovascolare.</div></div>
+            <div class="glossary-item"><div class="glossary-term">defecazione</div><div class="glossary-def">Eliminazione delle feci attraverso l'ano.</div></div>
+            <div class="glossary-item"><div class="glossary-term">digestione</div><div class="glossary-def">Processo di trasformazione delle sostanze complesse in sostanze semplici assorbibili.</div></div>
+            <div class="glossary-item"><div class="glossary-term">duodeno</div><div class="glossary-def">Prima parte dell'intestino tenue; riceve bile e succo pancreatico.</div></div>
+            <div class="glossary-item"><div class="glossary-term">emulsionare</div><div class="glossary-def">Ridurre i grassi in goccioline minutissime (funzione della bile).</div></div>
+            <div class="glossary-item"><div class="glossary-term">enzima</div><div class="glossary-def">Proteina che accelera una reazione chimica specifica.</div></div>
+            <div class="glossary-item"><div class="glossary-term">epiglottide</div><div class="glossary-def">Valvola che chiude la laringe durante la deglutizione, impedendo al cibo di entrare nelle vie aeree.</div></div>
+            <div class="glossary-item"><div class="glossary-term">esofago</div><div class="glossary-def">Canale di circa 20 cm che collega la faringe allo stomaco; il cibo avanza per peristalsi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">faringe</div><div class="glossary-def">Condotto comune al passaggio di aria e cibo, tra bocca ed esofago.</div></div>
+            <div class="glossary-item"><div class="glossary-term">feci</div><div class="glossary-def">Materiale non assorbito dall'intestino, eliminato con la defecazione.</div></div>
+            <div class="glossary-item"><div class="glossary-term">fegato</div><div class="glossary-def">Ghiandola più grande del corpo; produce la bile, regola la glicemia, detossifica.</div></div>
+            <div class="glossary-item"><div class="glossary-term">fibra</div><div class="glossary-def">Cellulosa e altre sostanze vegetali non digeribili; favorisce il transito intestinale.</div></div>
+            <div class="glossary-item"><div class="glossary-term">glicemia</div><div class="glossary-def">Concentrazione di glucosio nel sangue; regolata dal fegato.</div></div>
+            <div class="glossary-item"><div class="glossary-term">glicogeno</div><div class="glossary-def">Polisaccaride di riserva energetica negli animali; immagazzinato in muscoli e fegato.</div></div>
+            <div class="glossary-item"><div class="glossary-term">immunoglobuline</div><div class="glossary-def">Anticorpi; proteine che difendono l'organismo dalle malattie.</div></div>
+            <div class="glossary-item"><div class="glossary-term">intestino crasso</div><div class="glossary-def">Tratto finale (1,5 m): cieco, colon, retto. Assorbe acqua e sali; forma le feci.</div></div>
+            <div class="glossary-item"><div class="glossary-term">intestino tenue</div><div class="glossary-def">Tratto lungo 6 m (duodeno, digiuno, ileo); completa la digestione e assorbe i nutrienti.</div></div>
+            <div class="glossary-item"><div class="glossary-term">lattasi</div><div class="glossary-def">Enzima del succo enterico che scinde il lattosio in glucosio e galattosio.</div></div>
+            <div class="glossary-item"><div class="glossary-term">lattosio</div><div class="glossary-def">Zucchero del latte; disaccaride formato da glucosio + galattosio.</div></div>
+            <div class="glossary-item"><div class="glossary-term">lipidi</div><div class="glossary-def">Macronutrienti insolubili in acqua: trigliceridi, fosfolipidi, steroli, cere.</div></div>
+            <div class="glossary-item"><div class="glossary-term">lisozima</div><div class="glossary-def">Enzima della saliva con proprietà battericide.</div></div>
+            <div class="glossary-item"><div class="glossary-term">macronutrienti</div><div class="glossary-def">Nutrienti necessari in grande quantità: carboidrati, lipidi, proteine.</div></div>
+            <div class="glossary-item"><div class="glossary-term">micronutrienti</div><div class="glossary-def">Nutrienti necessari in piccole quantità: vitamine e sali minerali.</div></div>
+            <div class="glossary-item"><div class="glossary-term">microvilli</div><div class="glossary-def">Piccolissime espansioni sulla superficie dei villi intestinali; aumentano l'area di assorbimento.</div></div>
+            <div class="glossary-item"><div class="glossary-term">monomero</div><div class="glossary-def">Piccola molecola che, unita ad altre, forma un polimero (es. amminoacido → proteina).</div></div>
+            <div class="glossary-item"><div class="glossary-term">mucosa gastrica</div><div class="glossary-def">Rivestimento interno dello stomaco, ricco di ghiandole che producono il succo gastrico.</div></div>
+            <div class="glossary-item"><div class="glossary-term">pancreas</div><div class="glossary-def">Ghiandola dietro lo stomaco; produce il succo pancreatico (enzimi + bicarbonato di sodio).</div></div>
+            <div class="glossary-item"><div class="glossary-term">papille gustative</div><div class="glossary-def">Strutture sulla lingua responsabili del senso del gusto.</div></div>
+            <div class="glossary-item"><div class="glossary-term">pepsina</div><div class="glossary-def">Enzima del succo gastrico che demolisce le proteine in peptoni.</div></div>
+            <div class="glossary-item"><div class="glossary-term">peptoni</div><div class="glossary-def">Frammenti di proteine prodotti dall'azione della pepsina.</div></div>
+            <div class="glossary-item"><div class="glossary-term">peristalsi</div><div class="glossary-def">Contrazioni ritmiche dei muscoli lisci del tubo digerente che fanno avanzare il cibo.</div></div>
+            <div class="glossary-item"><div class="glossary-term">peritoneo</div><div class="glossary-def">Membrana protettiva che avvolge l'intestino.</div></div>
+            <div class="glossary-item"><div class="glossary-term">piloro</div><div class="glossary-def">Valvola tra stomaco e duodeno.</div></div>
+            <div class="glossary-item"><div class="glossary-term">polimero</div><div class="glossary-def">Macromolecola formata da molti monomeri uniti da legami covalenti.</div></div>
+            <div class="glossary-item"><div class="glossary-term">proteine</div><div class="glossary-def">Macromolecole formate da amminoacidi; funzione plastica, enzimatica, immunitaria.</div></div>
+            <div class="glossary-item"><div class="glossary-term">ptialina</div><div class="glossary-def">Enzima della saliva che scinde l'amido in maltosio.</div></div>
+            <div class="glossary-item"><div class="glossary-term">succo enterico</div><div class="glossary-def">Succo digestivo prodotto dalle ghiandole intestinali; contiene la lattasi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">succo gastrico</div><div class="glossary-def">Liquido digestivo dello stomaco: acido cloridrico + pepsina + muco.</div></div>
+            <div class="glossary-item"><div class="glossary-term">succo pancreatico</div><div class="glossary-def">Prodotto dal pancreas; contiene enzimi digestivi e bicarbonato di sodio.</div></div>
+            <div class="glossary-item"><div class="glossary-term">trigliceridi</div><div class="glossary-def">Lipidi formati da glicerolo + tre acidi grassi; riserva energetica principale dei grassi.</div></div>
+            <div class="glossary-item"><div class="glossary-term">tubo digerente</div><div class="glossary-def">Canale di 7,5–8 m dalla bocca all'ano.</div></div>
+            <div class="glossary-item"><div class="glossary-term">villi intestinali</div><div class="glossary-def">Espansioni della parete dell'intestino tenue che aumentano la superficie di assorbimento.</div></div>
+            <div class="glossary-item"><div class="glossary-term">vitamine</div><div class="glossary-def">Micronutrienti organici con funzione regolatrice; idrosolubili o liposolubili.</div></div>
+        </div>
+    </section>
+
+    <footer>Appunti di studio · Unità 3: Gli alimenti e la loro digestione · Corpo umano e genetica</footer>
+
+</div>
+</body>
+</html>
